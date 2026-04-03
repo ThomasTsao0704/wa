@@ -210,6 +210,19 @@
             margin-top: 20px;
         }
 
+        .result-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .result-controls label {
+            margin: 0;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
         #queryPreview {
             font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
             font-size: 12px;
@@ -230,9 +243,14 @@
             margin-top: 14px;
         }
 
+        #app.grouped {
+            display: block;
+        }
+
         .card {
-            background: #ffffff;
+            background: linear-gradient(135deg, #ffffff 0%, #f7faf6 100%);
             border: 1px solid var(--line);
+            border-left: 4px solid var(--accent);
             border-radius: 14px;
             padding: 12px;
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
@@ -265,6 +283,33 @@
             justify-content: space-between;
             align-items: center;
             margin-top: 18px;
+            gap: 12px;
+        }
+
+        .group-section {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 16px;
+            border: 1px dashed #dde3d5;
+            background: #f9faf6;
+        }
+
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .group-title {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .group-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 12px;
         }
 
@@ -421,10 +466,14 @@
             </div>
         </div>
 
-        <div class="result-header">
-            <div class="section-title" style="margin:0;">查詢結果</div>
-            <div class="badge" id="countBadge">0 筆</div>
-        </div>
+    <div class="result-header">
+      <div class="section-title" style="margin:0;">查詢結果</div>
+      <div class="result-controls">
+        <label for="groupField">分群欄位</label>
+        <select id="groupField"></select>
+        <div class="badge" id="countBadge">0 筆</div>
+      </div>
+    </div>
 
         <div id="app" aria-live="polite"></div>
 
@@ -453,14 +502,17 @@
         let columns = [];
 
         const conditionsEl = document.getElementById("conditions");
-        const keywordFieldEl = document.getElementById("keywordField");
-        const orderFieldEl = document.getElementById("orderField");
-        const schemaStatusEl = document.getElementById("schemaStatus");
-        const advancedModeEl = document.getElementById("advancedMode");
-        const settingsModalEl = document.getElementById("settingsModal");
-        const settingsContentEl = document.getElementById("settingsContent");
-        const settingsPanelEl = document.getElementById("settingsPanel");
-        const settingsHostEl = document.getElementById("settingsHost");
+const keywordFieldEl = document.getElementById("keywordField");
+const orderFieldEl = document.getElementById("orderField");
+const schemaStatusEl = document.getElementById("schemaStatus");
+const advancedModeEl = document.getElementById("advancedMode");
+const settingsModalEl = document.getElementById("settingsModal");
+const settingsContentEl = document.getElementById("settingsContent");
+const settingsPanelEl = document.getElementById("settingsPanel");
+const settingsHostEl = document.getElementById("settingsHost");
+const groupFieldEl = document.getElementById("groupField");
+
+let lastData = [];
 
         function indexToLetter(index) {
             let letters = "";
@@ -496,17 +548,25 @@
             buildFieldSelectors();
         }
 
-        function buildFieldSelectors() {
-            const fieldOptions = columns.map(col => `<option value="${col.index}">${col.label}</option>`).join("");
-            const textFields = columns.filter(col => col.type === "string");
+function buildFieldSelectors() {
+  const fieldOptions = columns.map(col => `<option value="${col.index}">${col.label}</option>`).join("");
+  const textFields = columns.filter(col => col.type === "string");
+  const prevGroup = groupFieldEl.value;
 
-            keywordFieldEl.innerHTML = `<option value="ALL_TEXT">所有文字欄位</option>${fieldOptions}`;
-            orderFieldEl.innerHTML = `<option value="">不排序</option>${fieldOptions}`;
+  keywordFieldEl.innerHTML = `<option value="ALL_TEXT">所有文字欄位</option>${fieldOptions}`;
+  orderFieldEl.innerHTML = `<option value="">不排序</option>${fieldOptions}`;
+  groupFieldEl.innerHTML = `<option value="">不分群</option>${fieldOptions}`;
 
-            if (!textFields.length) {
-                keywordFieldEl.innerHTML = `<option value="">（無文字欄位）</option>`;
-                document.getElementById("keyword").disabled = true;
-            }
+  if (!textFields.length) {
+    keywordFieldEl.innerHTML = `<option value="">（無文字欄位）</option>`;
+    document.getElementById("keyword").disabled = true;
+  }
+
+  if (prevGroup && columns.some(col => String(col.index) === String(prevGroup))) {
+    groupFieldEl.value = prevGroup;
+  } else if (columns.length) {
+    groupFieldEl.value = "0";
+  }
 
             if (!conditionsEl.children.length) {
                 addConditionRow();
@@ -883,39 +943,71 @@
         }
 
         function render(data) {
-            const app = document.getElementById("app");
-            document.getElementById("countBadge").textContent = `${data.length} 筆`;
+        const app = document.getElementById("app");
+        document.getElementById("countBadge").textContent = `${data.length} 筆`;
 
-            if (!data.length) {
-                app.innerHTML = "<div class=\"card\">沒有符合條件的資料</div>";
-                return;
-            }
+        if (!data.length) {
+          app.classList.remove("grouped");
+          app.innerHTML = "<div class=\"card\">沒有符合條件的資料</div>";
+          return;
+        }
 
-            const html = data.map(row => {
-                const fields = columns.map((col, idx) => {
-                    const value = row[idx] ?? "";
-                    return `
+        const groupIndex = groupFieldEl.value === "" ? null : Number(groupFieldEl.value);
+
+        const buildCard = (row) => {
+          const fields = columns.map((col, idx) => {
+            const value = row[idx] ?? "";
+            return `
         <div class=\"field\">
           <span>${col.label}</span>
           <strong>${value}</strong>
         </div>
       `;
-                }).join("");
+          }).join("");
 
-                return `
+          return `
       <div class=\"card\">
         <div class=\"card-title\">${row[0] ?? "資料"}</div>
         ${fields}
       </div>
     `;
-            }).join("");
+        };
 
-            app.innerHTML = html;
+        if (groupIndex === null || Number.isNaN(groupIndex)) {
+          app.classList.remove("grouped");
+          app.innerHTML = data.map(buildCard).join("");
+          return;
         }
 
-        async function update() {
+        app.classList.add("grouped");
+
+        const grouped = new Map();
+        data.forEach(row => {
+          const raw = row[groupIndex];
+          const key = (raw === null || raw === undefined || raw === "") ? "未分類" : raw;
+          if (!grouped.has(key)) grouped.set(key, []);
+          grouped.get(key).push(row);
+        });
+
+        const html = [...grouped.entries()].map(([key, rows]) => `
+    <section class=\"group-section\">
+      <div class=\"group-header\">
+        <div class=\"group-title\">${key}</div>
+        <span class=\"badge\">${rows.length} 筆</span>
+      </div>
+      <div class=\"group-grid\">
+        ${rows.map(buildCard).join("")}
+      </div>
+    </section>
+  `).join("");
+
+        app.innerHTML = html;
+      }
+
+      async function update() {
             const data = await fetchData();
-            render(data);
+            lastData = data;
+            render(lastData);
             document.getElementById("page").innerText = currentPage + 1;
         }
 
@@ -959,10 +1051,13 @@
                 }
             });
 
-            document.getElementById("searchBtn").addEventListener("click", resetAndSearch);
-            document.getElementById("limit").addEventListener("change", resetAndSearch);
-            document.getElementById("orderDir").addEventListener("change", resetAndSearch);
-            orderFieldEl.addEventListener("change", resetAndSearch);
+        document.getElementById("searchBtn").addEventListener("click", resetAndSearch);
+        document.getElementById("limit").addEventListener("change", resetAndSearch);
+        document.getElementById("orderDir").addEventListener("change", resetAndSearch);
+        orderFieldEl.addEventListener("change", resetAndSearch);
+        groupFieldEl.addEventListener("change", () => {
+          if (lastData.length) render(lastData);
+        });
 
             document.getElementById("prevBtn").addEventListener("click", () => {
                 if (currentPage > 0) {
@@ -989,3 +1084,4 @@
 </body>
 
 </html>
+
