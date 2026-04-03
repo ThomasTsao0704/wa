@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🧠 離線知識庫</title>
+  <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #f0f2f5;
+  --surface:   #ffffff;
+  --border:    #e2e5eb;
+  --accent:    #4f6ef7;
+  --accent-lt: #eef0ff;
+  --accent-dk: #3b54c4;
+  --text:      #1a1d23;
+  --muted:     #7a8099;
+  --danger:    #ef4444;
+  --danger-lt: #fef2f2;
+  --success:   #22c55e;
+  --warn:      #f59e0b;
+  --warn-lt:   #fffbeb;
+  --radius:    8px;
+  --shadow:    0 2px 8px rgba(0,0,0,.08);
+  --header-h:  52px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  overflow: hidden;
+  font-size: 14px;
+}
+
+/* ─── Header ─── */
+.header {
+  height: var(--header-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.header-left  { display: flex; align-items: center; gap: 8px; min-width: 180px; }
+.header-center{ flex: 1; }
+.header-right { display: flex; align-items: center; gap: 8px; min-width: 160px; justify-content: flex-end; }
+.logo      { font-size: 22px; }
+.logo-text { font-weight: 700; font-size: 15px; color: var(--accent); letter-spacing: -.3px; }
+
+.search-wrap {
+  display: flex; align-items: center;
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: 24px; padding: 0 12px; gap: 6px;
+  transition: border-color .15s;
+}
+.search-wrap:focus-within { border-color: var(--accent); background: #fff; }
+.search-icon { font-size: 13px; color: var(--muted); }
+#search {
+  flex: 1; border: none; background: transparent; outline: none;
+  font-size: 14px; padding: 7px 0; color: var(--text);
+}
+.clear-btn {
+  border: none; background: none; cursor: pointer;
+  color: var(--muted); font-size: 13px; padding: 2px 4px;
+  border-radius: 50%; line-height: 1;
+  opacity: 0; pointer-events: none; transition: opacity .15s;
+}
+.clear-btn.visible { opacity: 1; pointer-events: auto; }
+.clear-btn:hover { background: var(--border); color: var(--text); }
+
+.count-badge {
+  background: var(--accent-lt); color: var(--accent);
+  border-radius: 12px; padding: 3px 10px;
+  font-size: 12px; font-weight: 600; white-space: nowrap;
+}
+
+.icon-btn {
+  border: 1px solid var(--border); background: var(--surface);
+  border-radius: var(--radius); width: 30px; height: 30px;
+  cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, border-color .15s; color: var(--muted);
+}
+.icon-btn:hover { background: var(--accent-lt); border-color: var(--accent); color: var(--accent); }
+.icon-btn.starred { color: var(--warn); border-color: var(--warn); background: var(--warn-lt); }
+.icon-btn.danger:hover { background: var(--danger-lt); border-color: var(--danger); color: var(--danger); }
+
+.action-btn {
+  border: 1.5px solid var(--accent); background: var(--accent);
+  color: #fff; border-radius: 20px; padding: 5px 14px;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; gap: 4px;
+  transition: all .15s; white-space: nowrap;
+}
+.action-btn:hover { background: var(--accent-dk); border-color: var(--accent-dk); }
+
+/* ─── Layout ─── */
+.layout { display: flex; height: calc(100vh - var(--header-h)); overflow: hidden; }
+
+.sidebar {
+  width: 320px; min-width: 260px; max-width: 360px;
+  background: var(--surface); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; overflow: hidden;
+  transition: width .25s ease, min-width .25s ease, border-color .25s ease;
+}
+.sidebar.collapsed { width: 0; min-width: 0; border-right-color: transparent; }
+
+.filter-bar {
+  display: flex; gap: 6px; padding: 10px 12px 8px;
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.filter-btn {
+  border: 1.5px solid var(--border); background: transparent;
+  border-radius: 20px; padding: 4px 12px; font-size: 12px;
+  cursor: pointer; color: var(--muted); font-weight: 500; transition: all .15s;
+}
+.filter-btn:hover  { border-color: var(--accent); color: var(--accent); }
+.filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.tag-cloud {
+  padding: 8px 12px 6px; display: none; flex-wrap: wrap;
+  gap: 5px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.tag-chip {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 20px; padding: 2px 9px; font-size: 11px;
+  cursor: pointer; color: var(--muted); font-weight: 500; transition: all .12s;
+}
+.tag-chip:hover  { background: var(--accent-lt); border-color: var(--accent); color: var(--accent); }
+.tag-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.card-list { flex: 1; overflow-y: auto; padding: 8px; }
+.card-list::-webkit-scrollbar { width: 4px; }
+.card-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.card {
+  border: 1.5px solid var(--border); border-radius: var(--radius);
+  padding: 11px 12px; margin-bottom: 6px; cursor: pointer;
+  transition: border-color .12s, background .12s, box-shadow .12s;
+  position: relative; background: var(--surface);
+}
+.card:hover  { border-color: var(--accent); background: var(--accent-lt); box-shadow: var(--shadow); }
+.card.active { border-color: var(--accent); background: var(--accent-lt); box-shadow: 0 0 0 3px rgba(79,110,247,.12); }
+
+.card-star {
+  position: absolute; top: 8px; right: 8px;
+  font-size: 14px; cursor: pointer;
+  color: var(--border); transition: color .12s;
+}
+.card-star:hover, .card-star.on { color: var(--warn); }
+
+.card-title {
+  font-weight: 600; font-size: 13.5px; margin-bottom: 4px;
+  padding-right: 20px; line-height: 1.4; color: var(--text);
+}
+.card-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.card-tag {
+  background: var(--accent-lt); color: var(--accent);
+  border-radius: 10px; padding: 1px 7px; font-size: 10px; font-weight: 600;
+}
+.card-desc {
+  font-size: 11.5px; color: var(--muted); margin-top: 4px; line-height: 1.5;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.empty-state {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 6px; color: var(--muted); padding: 40px; text-align: center;
+}
+.empty-icon { font-size: 40px; margin-bottom: 8px; }
+
+/* ─── Viewer ─── */
+.viewer {
+  flex: 1; display: flex; flex-direction: column;
+  background: #fafbfc; overflow: hidden;
+}
+.welcome-screen {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; color: var(--muted); gap: 10px; padding: 60px 40px;
+}
+.welcome-icon { font-size: 64px; margin-bottom: 8px; }
+.welcome-screen h2 { font-size: 20px; color: var(--text); font-weight: 700; }
+.welcome-screen p  { font-size: 14px; }
+.welcome-stats {
+  display: flex; gap: 24px; margin: 16px 0;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px 28px;
+}
+.stat-item { text-align: center; }
+.stat-num  { font-size: 24px; font-weight: 700; color: var(--accent); }
+.stat-lbl  { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.welcome-tips { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.tip {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 6px 16px; font-size: 12px;
+}
+
+.viewer-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; background: var(--surface);
+  border-bottom: 1px solid var(--border); flex-shrink: 0; min-height: 44px;
+}
+.toolbar-left  { display: flex; align-items: center; gap: 8px; overflow: hidden; }
+.toolbar-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.viewer-title {
+  font-weight: 600; font-size: 14px; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; max-width: 500px;
+}
+.viewer-tag-pill {
+  background: var(--accent-lt); color: var(--accent);
+  border-radius: 10px; padding: 2px 9px; font-size: 11px; font-weight: 600; flex-shrink: 0;
+}
+#preview { flex: 1; width: 100%; border: none; background: #fff; }
+
+/* ─── Modal ─── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.45);
+  display: none; align-items: center; justify-content: center;
+  z-index: 500; backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface); border-radius: 12px;
+  width: 680px; max-width: 94vw; max-height: 90vh;
+  box-shadow: 0 20px 60px rgba(0,0,0,.2);
+  display: flex; flex-direction: column; overflow: hidden;
+  animation: modalIn .2s ease;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(16px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+}
+.modal-header h3 { font-size: 16px; font-weight: 700; }
+.modal-body { padding: 20px; overflow-y: auto; flex: 1; }
+.modal-footer {
+  display: flex; justify-content: flex-end; gap: 8px;
+  padding: 14px 20px; border-top: 1px solid var(--border);
+}
+
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block; font-size: 12px; font-weight: 600;
+  color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px;
+}
+.form-group input,
+.form-group textarea {
+  width: 100%; border: 1.5px solid var(--border); border-radius: var(--radius);
+  padding: 9px 12px; font-size: 14px; color: var(--text);
+  font-family: inherit; outline: none; transition: border-color .15s;
+  background: var(--bg);
+}
+.form-group input:focus,
+.form-group textarea:focus { border-color: var(--accent); background: #fff; }
+.form-group textarea {
+  min-height: 260px; resize: vertical;
+  font-family: 'SF Mono', Consolas, 'Courier New', monospace;
+  font-size: 13px; line-height: 1.6;
+}
+.form-hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+.confirm-body { text-align: center; padding: 30px 20px; }
+.confirm-body .confirm-icon { font-size: 48px; margin-bottom: 12px; }
+.confirm-body h3 { font-size: 17px; margin-bottom: 8px; }
+.confirm-body p  { color: var(--muted); font-size: 14px; }
+
+.btn {
+  border: 1.5px solid var(--border); background: var(--surface);
+  border-radius: var(--radius); padding: 8px 18px; font-size: 13px;
+  font-weight: 600; cursor: pointer; transition: all .15s;
+}
+.btn:hover { background: var(--bg); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.primary:hover { background: var(--accent-dk); border-color: var(--accent-dk); }
+.btn.danger  { background: var(--danger); border-color: var(--danger); color: #fff; }
+.btn.danger:hover  { background: #dc2626; border-color: #dc2626; }
+
+/* ─── Toast ─── */
+.toast {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  background: #1a1d23; color: #fff;
+  padding: 9px 20px; border-radius: 24px; font-size: 13px;
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s, transform .2s;
+  z-index: 999; white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+mark { background: #fef08a; border-radius: 2px; padding: 0 1px; }
+* { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <button id="sidebarToggle" class="icon-btn" title="展開/收合側欄">☰</button>
+      <span class="logo">🧠</span>
+      <span class="logo-text">離線知識庫</span>
+    </div>
+    <div class="header-center">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input id="search" type="text" placeholder="搜尋標題、標籤、摘要…" autocomplete="off" />
+        <button id="clearBtn" class="clear-btn" title="清除">✕</button>
+      </div>
+    </div>
+    <div class="header-right">
+      <span id="countBadge" class="count-badge">0 篇</span>
+      <button id="addBtn" class="action-btn" title="新增文章（Ctrl+N）">＋ 新增</button>
+    </div>
+  </header>
+
+  <!-- Main Layout -->
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">全部</button>
+        <button class="filter-btn" data-filter="starred">⭐ 收藏</button>
+        <button class="filter-btn" data-filter="recent">🕐 最近</button>
+      </div>
+      <div id="tagCloud" class="tag-cloud"></div>
+      <div id="cardList" class="card-list"></div>
+      <div id="emptyState" class="empty-state" style="display:none">
+        <div class="empty-icon">📭</div>
+        <div>找不到符合的文章</div>
+        <small>試試其他關鍵字</small>
+      </div>
+    </aside>
+
+    <main class="viewer">
+      <div id="welcomeScreen" class="welcome-screen">
+        <div class="welcome-icon">📚</div>
+        <h2>選擇一篇文章開始閱讀</h2>
+        <p>點擊左側卡片，即時在此預覽 HTML 內容</p>
+        <div class="welcome-stats" id="welcomeStats"></div>
+        <div class="welcome-tips">
+          <div class="tip">🔍 搜尋框支援即時篩選（Ctrl+K）</div>
+          <div class="tip">⭐ 點擊卡片右上角收藏文章</div>
+          <div class="tip">🏷️ 點擊標籤快速篩選分類</div>
+          <div class="tip">＋ 右上角新增自訂文章（Ctrl+N）</div>
+        </div>
+      </div>
+
+      <div id="viewerToolbar" class="viewer-toolbar" style="display:none">
+        <div class="toolbar-left">
+          <span id="viewerTitle" class="viewer-title"></span>
+          <span id="viewerTag" class="viewer-tag-pill"></span>
+        </div>
+        <div class="toolbar-right">
+          <button id="starBtn" class="icon-btn" title="收藏">☆</button>
+          <button id="editBtn" class="icon-btn" title="編輯">✎</button>
+          <button id="deleteBtn" class="icon-btn danger" title="刪除">🗑</button>
+          <button id="newTabBtn" class="icon-btn" title="在新分頁開啟">↗</button>
+          <button id="closeBtn" class="icon-btn" title="關閉">✕</button>
+        </div>
+      </div>
+
+      <iframe id="preview" style="display:none" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
+    </main>
+  </div>
+
+  <!-- Add / Edit Modal -->
+  <div id="articleModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">新增文章</h3>
+        <button class="icon-btn" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>標題</label>
+          <input id="formTitle" placeholder="文章標題" />
+        </div>
+        <div class="form-group">
+          <label>標籤（逗號分隔）</label>
+          <input id="formTags" placeholder="例：JavaScript, 教學, 筆記" />
+          <div class="form-hint">多個標籤請用半形逗號「,」分隔</div>
+        </div>
+        <div class="form-group">
+          <label>摘要</label>
+          <input id="formDesc" placeholder="選填，簡短描述文章內容" />
+        </div>
+        <div class="form-group">
+          <label>HTML 內容</label>
+          <textarea id="formContent" placeholder="在此輸入 HTML 內容，例如：&#10;&#10;&lt;h1&gt;Hello World&lt;/h1&gt;&#10;&lt;p&gt;這是一篇範例文章&lt;/p&gt;"></textarea>
+          <div class="form-hint">支援完整 HTML，將以 iframe 渲染呈現</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeModal()">取消</button>
+        <button class="btn primary" id="formSaveBtn" onclick="saveArticle()">儲存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirm Modal -->
+  <div id="deleteModal" class="modal-overlay">
+    <div class="modal" style="width:400px">
+      <div class="confirm-body">
+        <div class="confirm-icon">🗑️</div>
+        <h3>確定要刪除？</h3>
+        <p id="deleteMsg">這篇文章將永久刪除，無法復原。</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeDeleteModal()">取消</button>
+        <button class="btn danger" id="confirmDeleteBtn" onclick="confirmDelete()">確定刪除</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+<script>
+'use strict';
+
+/* ═══════════════════════════════════════════
+   內建資料庫（純 JS，零 fetch）
+   ═══════════════════════════════════════════ */
+const BUILTIN_DB = [
+  {
+    id: 'demo-1',
+    title: 'HTML 基礎入門',
+    tags: ['HTML', '教學'],
+    desc: '了解 HTML 的基本結構、常用標籤與語義化寫法',
+    content: '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:system-ui;max-width:720px;margin:40px auto;padding:0 20px;line-height:1.8;color:#1a1d23}h1{color:#4f6ef7;border-bottom:2px solid #eef0ff;padding-bottom:8px}h2{margin-top:24px;color:#3b54c4}code{background:#f0f2f5;padding:2px 6px;border-radius:4px;font-size:13px}pre{background:#1a1d23;color:#e2e5eb;padding:16px;border-radius:8px;overflow-x:auto;font-size:13px;line-height:1.6}.note{background:#eef0ff;border-left:4px solid #4f6ef7;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0}</style></head><body><h1>\u{1F310} HTML 基礎入門</h1><p>HTML（HyperText Markup Language）是構建網頁的基礎語言。每個網頁都是由 HTML 元素組成。</p><h2>\u{1F4CB} 基本結構</h2><pre>&lt;!DOCTYPE html&gt;\n&lt;html lang="zh-TW"&gt;\n  &lt;head&gt;\n    &lt;meta charset="UTF-8"&gt;\n    &lt;title&gt;我的網頁&lt;/title&gt;\n  &lt;/head&gt;\n  &lt;body&gt;\n    &lt;h1&gt;Hello World&lt;/h1&gt;\n    &lt;p&gt;這是我的第一個網頁！&lt;/p&gt;\n  &lt;/body&gt;\n&lt;/html&gt;</pre><h2>\u{1F3F7}\uFE0F 常用標籤</h2><ul><li><code>&lt;h1&gt;</code> ~ <code>&lt;h6&gt;</code>：標題（由大到小）</li><li><code>&lt;p&gt;</code>：段落</li><li><code>&lt;a href="..."&gt;</code>：超連結</li><li><code>&lt;img src="..."&gt;</code>：圖片</li><li><code>&lt;ul&gt;</code> / <code>&lt;ol&gt;</code>：清單</li><li><code>&lt;div&gt;</code> / <code>&lt;span&gt;</code>：容器</li></ul><div class="note"><strong>\u{1F4A1} 提示：</strong>語義化標籤（如 <code>&lt;header&gt;</code>、<code>&lt;nav&gt;</code>、<code>&lt;article&gt;</code>）能提升可讀性與 SEO。</div></body></html>'
+  },
+  {
+    id: 'demo-2',
+    title: 'CSS Flexbox 完整指南',
+    tags: ['CSS', '排版', '教學'],
+    desc: 'Flexbox 一維彈性佈局系統的核心觀念與常用屬性',
+    content: '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:system-ui;max-width:720px;margin:40px auto;padding:0 20px;line-height:1.8;color:#1a1d23}h1{color:#4f6ef7;border-bottom:2px solid #eef0ff;padding-bottom:8px}h2{margin-top:24px;color:#3b54c4}.demo{display:flex;gap:8px;padding:16px;background:#f0f2f5;border-radius:8px;margin:12px 0}.demo .box{background:#4f6ef7;color:#fff;padding:12px 20px;border-radius:6px;font-weight:600;font-size:14px}code{background:#f0f2f5;padding:2px 6px;border-radius:4px;font-size:13px}table{width:100%;border-collapse:collapse;margin:12px 0}th,td{text-align:left;padding:8px 12px;border:1px solid #e2e5eb;font-size:13px}th{background:#f0f2f5;font-weight:600}</style></head><body><h1>\u{1F4D0} CSS Flexbox 完整指南</h1><p>Flexbox 是 CSS3 的一維佈局模型，讓你輕鬆對齊、排列、分配空間。</p><h2>\u{1F527} 基本用法</h2><p>在父容器設定 <code>display: flex</code>，子元素自動變成 flex item：</p><div class="demo"><div class="box">A</div><div class="box">B</div><div class="box">C</div></div><h2>\u{1F4CA} 核心屬性一覽</h2><table><tr><th>容器屬性</th><th>說明</th></tr><tr><td><code>flex-direction</code></td><td>主軸方向（row / column）</td></tr><tr><td><code>justify-content</code></td><td>主軸對齊</td></tr><tr><td><code>align-items</code></td><td>交叉軸對齊</td></tr><tr><td><code>flex-wrap</code></td><td>是否換行</td></tr><tr><td><code>gap</code></td><td>間距</td></tr></table><h2>\u{1F3AF} 置中大法</h2><div class="demo" style="justify-content:center;align-items:center;min-height:100px"><div class="box">完美置中</div></div><p>只需三行：<code>display:flex; justify-content:center; align-items:center;</code></p></body></html>'
+  },
+  {
+    id: 'demo-3',
+    title: 'JavaScript 陣列方法速查',
+    tags: ['JavaScript', '速查表'],
+    desc: 'map、filter、reduce、find 等常用陣列方法一覽',
+    content: '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:system-ui;max-width:720px;margin:40px auto;padding:0 20px;line-height:1.8;color:#1a1d23}h1{color:#4f6ef7;border-bottom:2px solid #eef0ff;padding-bottom:8px}.card{background:#fff;border:1px solid #e2e5eb;border-radius:8px;padding:16px;margin:12px 0}.card h3{font-size:15px;color:#4f6ef7;margin-bottom:8px}pre{background:#1a1d23;color:#a5f3fc;padding:16px;border-radius:8px;overflow-x:auto;font-size:13px;line-height:1.6}.kw{color:#c084fc}.str{color:#86efac}.cmt{color:#6b7280}</style></head><body><h1>\u26A1 JavaScript 陣列方法速查</h1><div class="card"><h3>\u{1F504} map() — 轉換每個元素</h3><pre><span class="kw">const</span> nums = [1, 2, 3];\n<span class="kw">const</span> doubled = nums.<span class="kw">map</span>(n =&gt; n * 2);\n<span class="cmt">// [2, 4, 6]</span></pre></div><div class="card"><h3>\u{1F50D} filter() — 篩選元素</h3><pre><span class="kw">const</span> words = [<span class="str">\'hello\'</span>, <span class="str">\'hi\'</span>, <span class="str">\'hey\'</span>];\n<span class="kw">const</span> long = words.<span class="kw">filter</span>(w =&gt; w.length &gt; 2);\n<span class="cmt">// [\'hello\', \'hey\']</span></pre></div><div class="card"><h3>\u{1F4E6} reduce() — 累加 / 聚合</h3><pre><span class="kw">const</span> nums = [1, 2, 3, 4];\n<span class="kw">const</span> sum = nums.<span class="kw">reduce</span>((acc, n) =&gt; acc + n, 0);\n<span class="cmt">// 10</span></pre></div><div class="card"><h3>\u{1F3AF} find() / findIndex()</h3><pre><span class="kw">const</span> users = [{name:<span class="str">\'Alice\'</span>}, {name:<span class="str">\'Bob\'</span>}];\nusers.<span class="kw">find</span>(u =&gt; u.name === <span class="str">\'Bob\'</span>);\n<span class="cmt">// {name: \'Bob\'}</span></pre></div></body></html>'
+  },
+  {
+    id: 'demo-4',
+    title: 'Git 常用指令備忘錄',
+    tags: ['Git', '工具', '速查表'],
+    desc: '日常開發中最常用的 Git 指令整理',
+    content: '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:system-ui;max-width:720px;margin:40px auto;padding:0 20px;line-height:1.8;color:#1a1d23}h1{color:#4f6ef7;border-bottom:2px solid #eef0ff;padding-bottom:8px}h2{margin-top:24px;color:#3b54c4;font-size:16px}code{background:#f0f2f5;padding:2px 8px;border-radius:4px;font-size:13px;font-family:monospace}.cmd{background:#1a1d23;color:#86efac;padding:12px 16px;border-radius:8px;font-family:monospace;font-size:13px;margin:8px 0;display:block}.flag{color:#c084fc}table{width:100%;border-collapse:collapse;margin:12px 0}th,td{text-align:left;padding:8px 12px;border:1px solid #e2e5eb;font-size:13px}th{background:#f0f2f5;font-weight:600}</style></head><body><h1>\u{1F33F} Git 常用指令備忘錄</h1><h2>\u{1F4C1} 基礎操作</h2><code class="cmd">git init</code><code class="cmd">git clone <span class="flag">&lt;repo-url&gt;</span></code><code class="cmd">git status</code><code class="cmd">git add <span class="flag">.</span></code><code class="cmd">git commit <span class="flag">-m "訊息"</span></code><h2>\u{1F33F} 分支管理</h2><table><tr><th>指令</th><th>用途</th></tr><tr><td><code>git branch</code></td><td>查看分支</td></tr><tr><td><code>git branch 名稱</code></td><td>建立分支</td></tr><tr><td><code>git checkout 名稱</code></td><td>切換分支</td></tr><tr><td><code>git merge 名稱</code></td><td>合併分支</td></tr><tr><td><code>git branch -d 名稱</code></td><td>刪除分支</td></tr></table><h2>\u{1F504} 遠端操作</h2><code class="cmd">git push <span class="flag">origin main</span></code><code class="cmd">git pull <span class="flag">origin main</span></code><code class="cmd">git fetch <span class="flag">--all</span></code><h2>\u23EA 還原操作</h2><code class="cmd">git reset <span class="flag">--soft HEAD~1</span></code><code class="cmd">git stash</code><code class="cmd">git stash pop</code></body></html>'
+  },
+  {
+    id: 'demo-5',
+    title: '響應式設計 Media Query',
+    tags: ['CSS', 'RWD', '教學'],
+    desc: '使用 @media 建立適應各裝置的響應式網頁',
+    content: '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:system-ui;max-width:720px;margin:40px auto;padding:0 20px;line-height:1.8;color:#1a1d23}h1{color:#4f6ef7;border-bottom:2px solid #eef0ff;padding-bottom:8px}h2{margin-top:24px;color:#3b54c4}pre{background:#1a1d23;color:#e2e5eb;padding:16px;border-radius:8px;overflow-x:auto;font-size:13px;line-height:1.6}.bp{color:#c084fc}.val{color:#86efac}.breakpoints{display:flex;gap:12px;margin:16px 0;flex-wrap:wrap}.bp-card{background:#fff;border:1px solid #e2e5eb;border-radius:8px;padding:14px;text-align:center;flex:1;min-width:120px}.bp-card .icon{font-size:28px;margin-bottom:4px}.bp-card .label{font-weight:600;font-size:13px}.bp-card .size{color:#7a8099;font-size:12px}.note{background:#eef0ff;border-left:4px solid #4f6ef7;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0}</style></head><body><h1>\u{1F4F1} 響應式設計 Media Query</h1><h2>\u{1F4CF} 常用斷點</h2><div class="breakpoints"><div class="bp-card"><div class="icon">\u{1F4F1}</div><div class="label">手機</div><div class="size">&lt; 768px</div></div><div class="bp-card"><div class="icon">\u{1F4F1}</div><div class="label">平板</div><div class="size">768\u20131024px</div></div><div class="bp-card"><div class="icon">\u{1F4BB}</div><div class="label">桌面</div><div class="size">&gt; 1024px</div></div></div><h2>\u270D\uFE0F 語法範例</h2><pre><span class="bp">@media</span> (max-width: <span class="val">768px</span>) {\n  .container {\n    flex-direction: column;\n    padding: 16px;\n  }\n}\n\n<span class="bp">@media</span> (min-width: <span class="val">1024px</span>) {\n  .sidebar {\n    display: block;\n    width: 280px;\n  }\n}</pre><div class="note"><strong>\u{1F4A1} Mobile First：</strong>先寫手機樣式，再用 <code>min-width</code> 往上加。這樣更精簡、效能更好。</div><h2>\u{1F9EA} 實用技巧</h2><ul><li>用 <code>rem</code> / <code>em</code> 取代固定 px</li><li>搭配 <code>clamp()</code> 做流體排版</li><li>善用 CSS Grid 的 <code>auto-fit</code> / <code>minmax()</code></li></ul></body></html>'
+  }
+];
+
+/* ═══════════════════════════════════════════
+   Core
+   ═══════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+const $search        = $('search');
+const $clearBtn      = $('clearBtn');
+const $cardList      = $('cardList');
+const $tagCloud      = $('tagCloud');
+const $emptyState    = $('emptyState');
+const $countBadge    = $('countBadge');
+const $preview       = $('preview');
+const $welcomeScreen = $('welcomeScreen');
+const $viewerToolbar = $('viewerToolbar');
+const $viewerTitle   = $('viewerTitle');
+const $viewerTag     = $('viewerTag');
+const $welcomeStats  = $('welcomeStats');
+const $starBtn       = $('starBtn');
+const $editBtn       = $('editBtn');
+const $deleteBtn     = $('deleteBtn');
+const $newTabBtn     = $('newTabBtn');
+const $closeBtn      = $('closeBtn');
+const $addBtn        = $('addBtn');
+const $toast         = $('toast');
+const $sidebar       = document.querySelector('.sidebar');
+const $sidebarToggle = $('sidebarToggle');
+
+let database     = [];
+let starred      = new Set(JSON.parse(localStorage.getItem('kb_starred') || '[]'));
+let recentIds    = JSON.parse(localStorage.getItem('kb_recent') || '[]');
+let activeFilter = 'all';
+let activeTag    = '';
+let activeCard   = null;
+let toastTimer   = null;
+let editingId    = null;
+let deletingId   = null;
+
+// ─── Boot (zero fetch) ───
+initDatabase();
+
+function initDatabase() {
+  const userArticles   = JSON.parse(localStorage.getItem('kb_user_articles') || '[]');
+  const deletedIds     = new Set(JSON.parse(localStorage.getItem('kb_deleted_ids') || '[]'));
+  const editedOverrides = JSON.parse(localStorage.getItem('kb_edited_overrides') || '{}');
+
+  database = [];
+  BUILTIN_DB.forEach(item => {
+    if (deletedIds.has(item.id)) return;
+    database.push(editedOverrides[item.id] ? { ...item, ...editedOverrides[item.id] } : { ...item });
+  });
+  userArticles.forEach(item => database.push(item));
+
+  buildTagCloud();
+  applyFilters();
+  renderStats();
+  toast('\u2705 已載入 ' + database.length + ' 篇文章');
+}
+
+function persistUser() {
+  localStorage.setItem('kb_user_articles', JSON.stringify(database.filter(d => d.id.startsWith('user-'))));
+}
+
+// ─── Tags ───
+function buildTagCloud() {
+  const counts = {};
+  database.forEach(d => (d.tags || []).forEach(t => { counts[t] = (counts[t] || 0) + 1; }));
+  $tagCloud.innerHTML = '';
+  $tagCloud.appendChild(makeChip('全部', '', true));
+  Object.entries(counts).sort((a, b) => b[1] - a[1])
+    .forEach(([tag, n]) => $tagCloud.appendChild(makeChip(tag + ' (' + n + ')', tag, false)));
+}
+function makeChip(label, tag, active) {
+  const el = document.createElement('span');
+  el.className = 'tag-chip' + (active ? ' active' : '');
+  el.textContent = label;
+  el.dataset.tag = tag;
+  el.onclick = () => {
+    activeTag = tag;
+    document.querySelectorAll('.tag-chip').forEach(c => c.classList.toggle('active', c.dataset.tag === tag));
+    applyFilters();
+  };
+  return el;
+}
+
+// ─── Filters ───
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.onclick = () => {
+    activeFilter = btn.dataset.filter;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+  };
+});
+
+$search.oninput = () => { $clearBtn.classList.toggle('visible', $search.value.length > 0); applyFilters(); };
+$clearBtn.onclick = () => { $search.value = ''; $clearBtn.classList.remove('visible'); applyFilters(); $search.focus(); };
+
+function applyFilters() {
+  const kw = $search.value.trim().toLowerCase();
+  let pool = database.slice();
+  if (activeFilter === 'starred') pool = pool.filter(d => starred.has(d.id));
+  else if (activeFilter === 'recent') {
+    const set = new Set(recentIds);
+    pool = pool.filter(d => set.has(d.id)).sort((a, b) => recentIds.indexOf(a.id) - recentIds.indexOf(b.id));
+  }
+  if (activeTag) pool = pool.filter(d => (d.tags || []).includes(activeTag));
+  if (kw) pool = pool.filter(d =>
+    (d.title || '').toLowerCase().includes(kw) ||
+    (d.desc  || '').toLowerCase().includes(kw) ||
+    (d.tags  || []).some(t => t.toLowerCase().includes(kw))
+  );
+  renderCards(pool, kw);
+  $countBadge.textContent = pool.length + ' 篇';
+}
+
+// ─── Cards ───
+function renderCards(list, hl) {
+  $cardList.innerHTML = '';
+  $emptyState.style.display = list.length ? 'none' : 'flex';
+  list.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'card' + (item.id === activeCard ? ' active' : '');
+    const t = hl ? escHi(item.title, hl) : esc(item.title);
+    const d = hl && item.desc ? escHi(item.desc, hl) : esc(item.desc || '');
+    const tags = (item.tags || []).map(t => '<span class="card-tag">' + esc(t) + '</span>').join('');
+    card.innerHTML =
+      '<span class="card-star' + (starred.has(item.id) ? ' on' : '') + '" title="收藏">\u2606</span>' +
+      '<div class="card-title">' + t + '</div>' +
+      '<div class="card-meta">' + tags + '</div>' +
+      (item.desc ? '<div class="card-desc">' + d + '</div>' : '');
+    card.querySelector('.card-star').onclick = e => { e.stopPropagation(); toggleStar(item.id, card.querySelector('.card-star')); };
+    card.onclick = () => openArticle(item, card);
+    $cardList.appendChild(card);
+  });
+}
+
+// ─── View (srcdoc only, zero fetch) ───
+function openArticle(item, cardEl) {
+  activeCard = item.id;
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+  cardEl && cardEl.classList.add('active');
+  $welcomeScreen.style.display = 'none';
+  $viewerToolbar.style.display = 'flex';
+  $preview.style.display = 'block';
+  $sidebar.classList.add('collapsed');
+  $viewerTitle.textContent = item.title || '(無標題)';
+  $viewerTag.textContent = (item.tags || []).join(' \u00B7 ');
+  $viewerTag.style.display = item.tags && item.tags.length ? 'inline' : 'none';
+  $starBtn.className = 'icon-btn' + (starred.has(item.id) ? ' starred' : '');
+  $preview.srcdoc = item.content || '<body style="font-family:system-ui;padding:40px;color:#7a8099"><p>（此文章沒有內容）</p></body>';
+  pushRecent(item.id);
+}
+
+// ─── Star ───
+function toggleStar(id, el) {
+  if (starred.has(id)) {
+    starred.delete(id); if (el) el.className = 'card-star';
+    if (activeCard === id) $starBtn.className = 'icon-btn';
+    toast('已取消收藏');
+  } else {
+    starred.add(id); if (el) el.className = 'card-star on';
+    if (activeCard === id) $starBtn.className = 'icon-btn starred';
+    toast('\u2B50 已加入收藏');
+  }
+  localStorage.setItem('kb_starred', JSON.stringify([...starred]));
+}
+$starBtn.onclick = () => { if (!activeCard) return; toggleStar(activeCard, document.querySelector('.card.active .card-star')); };
+
+// ─── Recent ───
+function pushRecent(id) {
+  recentIds = recentIds.filter(p => p !== id);
+  recentIds.unshift(id);
+  recentIds = recentIds.slice(0, 50);
+  localStorage.setItem('kb_recent', JSON.stringify(recentIds));
+}
+
+// ─── Toolbar ───
+$newTabBtn.onclick = () => {
+  if (!activeCard) return;
+  const item = database.find(d => d.id === activeCard);
+  if (!item) return;
+  const w = window.open('', '_blank');
+  w.document.write(item.content);
+  w.document.close();
+};
+$closeBtn.onclick = () => {
+  activeCard = null;
+  $preview.removeAttribute('srcdoc');
+  $preview.style.display = 'none';
+  $viewerToolbar.style.display = 'none';
+  $welcomeScreen.style.display = 'flex';
+  $sidebar.classList.remove('collapsed');
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+};
+$sidebarToggle.onclick = () => $sidebar.classList.toggle('collapsed');
+
+function renderStats() {
+  const tags = new Set(database.flatMap(d => d.tags || []));
+  $welcomeStats.innerHTML =
+    '<div class="stat-item"><div class="stat-num">' + database.length + '</div><div class="stat-lbl">篇文章</div></div>' +
+    '<div class="stat-item"><div class="stat-num">' + tags.size + '</div><div class="stat-lbl">個標籤</div></div>' +
+    '<div class="stat-item"><div class="stat-num">' + starred.size + '</div><div class="stat-lbl">已收藏</div></div>';
+}
+
+/* ═══════════════════════════════════════════
+   CRUD
+   ═══════════════════════════════════════════ */
+$addBtn.onclick = () => {
+  editingId = null;
+  $('modalTitle').textContent = '\u2728 新增文章';
+  $('formTitle').value = ''; $('formTags').value = '';
+  $('formDesc').value = ''; $('formContent').value = '';
+  $('formSaveBtn').textContent = '新增';
+  $('articleModal').classList.add('open');
+  setTimeout(() => $('formTitle').focus(), 100);
+};
+
+$editBtn.onclick = () => {
+  if (!activeCard) return;
+  const item = database.find(d => d.id === activeCard);
+  if (!item) return;
+  editingId = item.id;
+  $('modalTitle').textContent = '\u270F\uFE0F 編輯文章';
+  $('formTitle').value = item.title || '';
+  $('formTags').value = (item.tags || []).join(', ');
+  $('formDesc').value = item.desc || '';
+  $('formContent').value = item.content || '';
+  $('formSaveBtn').textContent = '儲存修改';
+  $('articleModal').classList.add('open');
+  setTimeout(() => $('formTitle').focus(), 100);
+};
+
+function closeModal() { $('articleModal').classList.remove('open'); editingId = null; }
+
+function saveArticle() {
+  const title = $('formTitle').value.trim();
+  const tags = $('formTags').value.split(',').map(t => t.trim()).filter(Boolean);
+  const desc = $('formDesc').value.trim();
+  const content = $('formContent').value;
+  if (!title) { toast('\u274C 請填寫標題'); $('formTitle').focus(); return; }
+  if (!content) { toast('\u274C 請填寫內容'); $('formContent').focus(); return; }
+
+  if (editingId) {
+    const idx = database.findIndex(d => d.id === editingId);
+    if (idx !== -1) {
+      Object.assign(database[idx], { title, tags, desc, content });
+      if (editingId.startsWith('user-')) { persistUser(); }
+      else {
+        const ov = JSON.parse(localStorage.getItem('kb_edited_overrides') || '{}');
+        ov[editingId] = { title, tags, desc, content };
+        localStorage.setItem('kb_edited_overrides', JSON.stringify(ov));
+      }
+      toast('\u2705 文章已更新');
+      if (activeCard === editingId) openArticle(database[idx], document.querySelector('.card.active'));
+    }
+  } else {
+    const newItem = { id: 'user-' + Date.now(), title, tags, desc, content };
+    database.push(newItem);
+    persistUser();
+    toast('\u2705 文章已新增');
+  }
+  closeModal();
+  buildTagCloud(); applyFilters(); renderStats();
+}
+
+// ─── Delete ───
+$deleteBtn.onclick = () => {
+  if (!activeCard) return;
+  const item = database.find(d => d.id === activeCard);
+  if (!item) return;
+  deletingId = item.id;
+  $('deleteMsg').textContent = '\u300C' + item.title + '\u300D將被刪除，此操作無法復原。';
+  $('deleteModal').classList.add('open');
+};
+function closeDeleteModal() { $('deleteModal').classList.remove('open'); deletingId = null; }
+function confirmDelete() {
+  if (!deletingId) return;
+  const idx = database.findIndex(d => d.id === deletingId);
+  if (idx !== -1) {
+    database.splice(idx, 1);
+    if (deletingId.startsWith('user-')) { persistUser(); }
+    else {
+      const del = JSON.parse(localStorage.getItem('kb_deleted_ids') || '[]');
+      del.push(deletingId); localStorage.setItem('kb_deleted_ids', JSON.stringify(del));
+      const ov = JSON.parse(localStorage.getItem('kb_edited_overrides') || '{}');
+      delete ov[deletingId]; localStorage.setItem('kb_edited_overrides', JSON.stringify(ov));
+    }
+    starred.delete(deletingId);
+    localStorage.setItem('kb_starred', JSON.stringify([...starred]));
+    recentIds = recentIds.filter(p => p !== deletingId);
+    localStorage.setItem('kb_recent', JSON.stringify(recentIds));
+    toast('\u{1F5D1}\uFE0F 文章已刪除');
+    if (activeCard === deletingId) $closeBtn.click();
+    buildTagCloud(); applyFilters(); renderStats();
+  }
+  closeDeleteModal();
+}
+
+$('articleModal').onclick = e => { if (e.target === $('articleModal')) closeModal(); };
+$('deleteModal').onclick  = e => { if (e.target === $('deleteModal')) closeDeleteModal(); };
+
+/* ═══════════════════════════════════════════
+   Helpers
+   ═══════════════════════════════════════════ */
+function toast(msg, dur) {
+  dur = dur || 2000;
+  $toast.textContent = msg;
+  $toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $toast.classList.remove('show'), dur);
+}
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escHi(str, kw) {
+  const e = esc(str), k = esc(kw).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return e.replace(new RegExp('(' + k + ')', 'gi'), '<mark>$1</mark>');
+}
+
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); $search.focus(); $search.select(); }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'n') { e.preventDefault(); $addBtn.click(); }
+  if (e.key === 'Escape') {
+    if ($('articleModal').classList.contains('open')) { closeModal(); return; }
+    if ($('deleteModal').classList.contains('open')) { closeDeleteModal(); return; }
+    if ($search.value) { $search.value = ''; $clearBtn.classList.remove('visible'); applyFilters(); }
+    else if (activeCard) $closeBtn.click();
+  }
+});
+</script>
+</body>
+</html>

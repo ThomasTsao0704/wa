@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🧠 離線知識庫</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ─── Header ─── -->
+  <header class="header">
+    <div class="header-left">
+      <button id="sidebarToggle" class="icon-btn" title="展開/收合側欄">☰</button>
+      <span class="logo">🧠</span>
+      <span class="logo-text">離線知識庫</span>
+    </div>
+    <div class="header-center">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input id="search" type="text" placeholder="搜尋標題、標籤、摘要..." autocomplete="off" />
+        <button id="clearBtn" class="clear-btn" title="清除">✕</button>
+      </div>
+    </div>
+    <div class="header-right">
+      <span id="countBadge" class="count-badge">0 篇</span>
+      <button id="refreshBtn" class="icon-btn" title="重新載入索引">↺</button>
+    </div>
+  </header>
+
+  <!-- ─── Main Layout ─── -->
+  <div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">全部</button>
+        <button class="filter-btn" data-filter="starred">⭐ 收藏</button>
+        <button class="filter-btn" data-filter="recent">🕐 最近</button>
+      </div>
+
+      <!-- Tag Cloud -->
+      <div id="tagCloud" class="tag-cloud"></div>
+
+      <!-- Card List -->
+      <div id="cardList" class="card-list"></div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="empty-state" style="display:none">
+        <div class="empty-icon">📭</div>
+        <div>找不到符合的文章</div>
+        <small>試試其他關鍵字</small>
+      </div>
+
+    </aside>
+
+    <!-- Viewer -->
+    <main class="viewer">
+
+      <!-- Welcome Screen -->
+      <div id="welcomeScreen" class="welcome-screen">
+        <div class="welcome-icon">📚</div>
+        <h2>選擇一篇文章開始閱讀</h2>
+        <p>點擊左側卡片，即時在此預覽 HTML 內容</p>
+        <div class="welcome-stats" id="welcomeStats"></div>
+        <div class="welcome-tips">
+          <div class="tip">🔍 搜尋框支援即時篩選</div>
+          <div class="tip">⭐ 點擊卡片右上角收藏文章</div>
+          <div class="tip">🏷️ 點擊標籤快速篩選分類</div>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div id="viewerToolbar" class="viewer-toolbar" style="display:none">
+        <div class="toolbar-left">
+          <span id="viewerTitle" class="viewer-title"></span>
+          <span id="viewerTag" class="viewer-tag-pill"></span>
+        </div>
+        <div class="toolbar-right">
+          <button id="starBtn" class="icon-btn" title="收藏">☆</button>
+          <button id="newTabBtn" class="icon-btn" title="在新分頁開啟">↗</button>
+          <button id="closeBtn" class="icon-btn" title="關閉">✕</button>
+        </div>
+      </div>
+
+      <!-- iFrame Preview -->
+      <iframe id="preview" style="display:none" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
+
+    </main>
+
+  </div>
+
+  <!-- ─── Toast ─── -->
+  <div id="toast" class="toast"></div>
+
+  <!-- ⚠️ 順序不能反：database.js 必須在 app.js 之前 -->
+  <script src="database.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
