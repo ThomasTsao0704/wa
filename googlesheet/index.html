@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query UI 升級版</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap');
+
+        :root {
+            --bg: #f3f4f1;
+            --ink: #1d1f1b;
+            --muted: #6b6f63;
+            --panel: #ffffff;
+            --accent: #1f6f4a;
+            --accent-2: #f0c43c;
+            --line: #e3e6db;
+            --shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Space Grotesk", "Noto Sans TC", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 12% 10%, rgba(240, 196, 60, 0.2), transparent 40%),
+                radial-gradient(circle at 88% 20%, rgba(31, 111, 74, 0.18), transparent 35%),
+                var(--bg);
+            padding: 32px 20px 60px;
+        }
+
+        main {
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin: 0 0 6px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            margin-bottom: 22px;
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            padding: 18px;
+        }
+
+        .section-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .controls-grid {
+            display: grid;
+            gap: 14px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        @media (min-width: 860px) {
+            .row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        label {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        select,
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            font-family: inherit;
+            font-size: 14px;
+            background: #fff;
+        }
+
+        select:focus,
+        input:focus {
+            outline: 2px solid rgba(31, 111, 74, 0.25);
+            border-color: rgba(31, 111, 74, 0.4);
+        }
+
+        button {
+            border: none;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .button-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .button-ghost {
+            background: #f7f8f5;
+            color: var(--ink);
+            border: 1px dashed var(--line);
+        }
+
+        .button-warn {
+            background: #f5f1e7;
+            color: #6a4f00;
+            border: 1px solid #ebdfb8;
+        }
+
+        .conditions {
+            display: grid;
+            gap: 10px;
+        }
+
+        .condition-row {
+            display: grid;
+            gap: 8px;
+            grid-template-columns: 1fr 1.6fr 1fr 1.4fr auto;
+            align-items: center;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid var(--line);
+            background: #fbfcf8;
+        }
+
+        .conditions.advanced .condition-row {
+            grid-template-columns: 90px 80px 1.6fr 1fr 1.4fr 80px auto;
+        }
+
+        .condition-row.first .logic-wrap {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .logic-wrap {
+            min-width: 90px;
+        }
+
+        .field-wrap {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .type-badge {
+            background: #eef0f7;
+            color: #3a3f5f;
+            border-radius: 999px;
+            padding: 4px 8px;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .group-wrap {
+            display: none;
+        }
+
+        .conditions.advanced .group-wrap {
+            display: block;
+        }
+
+        .value-wrap {
+            width: 100%;
+        }
+
+        .condition-row .remove {
+            background: #fff3f2;
+            color: #9a2d2a;
+            border: 1px solid #f0c9c5;
+            padding: 8px 10px;
+        }
+
+        .controls-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        #queryPreview {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+            font-size: 12px;
+            color: #2b2f28;
+            background: #f7f8f5;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 8px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        #app {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 12px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        .card-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .field {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 13px;
+            padding: 6px 0;
+            border-bottom: 1px dashed #ecefe4;
+        }
+
+        .field:last-child {
+            border-bottom: none;
+        }
+
+        .field span {
+            color: var(--muted);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 18px;
+            gap: 12px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: #eef5f0;
+            color: #1f6f4a;
+            font-size: 12px;
+        }
+
+        .toggle-row {
+            margin: 6px 0 8px;
+        }
+
+        .inline-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        .modal-backdrop.show {
+            display: flex;
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            width: min(760px, 96vw);
+            box-shadow: var(--shadow);
+            padding: 18px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .modal-content {
+            display: grid;
+            gap: 12px;
+            max-height: 70vh;
+            overflow: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h1>Query UI 升級版</h1>
+        <div class="subtitle">多條件 AND / OR、關鍵字 LIKE、自動欄位辨識</div>
+
+        <div style="margin-bottom: 16px;">
+            <button class="button-ghost" id="openSettings">條件設定</button>
+        </div>
+
+        <div id="settingsHost" class="hidden">
+            <div class="panel" id="settingsPanel">
+                <div class="section-title">條件設定 <span class="badge" id="schemaStatus">欄位載入中</span></div>
+
+                <div class="controls-grid">
+                    <div>
+                        <label>關鍵字搜尋（LIKE）</label>
+                        <div class="row">
+                            <div>
+                                <select id="keywordField"></select>
+                            </div>
+                            <div>
+                                <input id="keyword" type="text" placeholder="例如：精品、急件、台北">
+                            </div>
+                        </div>
+                        <div class="row" style="grid-template-columns: 120px 1fr; margin-top: 8px;">
+                            <div>
+                                <select id="keywordLogic">
+                                    <option value="AND">AND</option>
+                                    <option value="OR">OR</option>
+                                </select>
+                            </div>
+                            <div style="font-size: 12px; color: var(--muted); align-self: center;">
+                                關鍵字條件與其他條件的關係
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label>多條件 AND / OR</label>
+                        <div class="toggle-row">
+                            <label class="inline-label">
+                                <input type="checkbox" id="advancedMode">
+                                進階模式（群組括號）
+                            </label>
+                        </div>
+                        <div class="conditions" id="conditions"></div>
+                        <div class="controls-actions" style="margin-top: 10px;">
+                            <button class="button-ghost" id="addCondition">新增條件</button>
+                            <button class="button-warn" id="clearCondition">清除條件</button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div>
+                            <label>排序欄位</label>
+                            <select id="orderField"></select>
+                        </div>
+                        <div>
+                            <label>排序方向</label>
+                            <select id="orderDir">
+                                <option value="">不排序</option>
+                                <option value="DESC">由大到小</option>
+                                <option value="ASC">由小到大</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div>
+                            <label>每頁筆數</label>
+                            <select id="limit">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                            </select>
+                        </div>
+                        <div style="display:flex; align-items:flex-end;">
+                            <button class="button-primary" id="searchBtn" style="width: 100%;">立即查詢</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="queryPreview">SELECT * ...</div>
+            </div>
+        </div>
+
+        <div class="result-header">
+            <div class="section-title" style="margin:0;">查詢結果</div>
+            <div class="badge" id="countBadge">0 筆</div>
+        </div>
+
+        <div id="app" aria-live="polite"></div>
+
+        <div class="pagination">
+            <button class="button-ghost" id="prevBtn">上一頁</button>
+            <div>第 <span id="page">1</span> 頁</div>
+            <button class="button-ghost" id="nextBtn">下一頁</button>
+        </div>
+    </main>
+
+    <div class="modal-backdrop" id="settingsModal" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="section-title" style="margin:0;">條件設定</div>
+                <button class="button-ghost" id="closeSettings">關閉</button>
+            </div>
+            <div class="modal-content" id="settingsContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const SHEET_ID = "1vzCbKSeE2wCRPx2Aqq5UPLoRwR_gZzZz69jJa92--G0";
+        const GID = "196211259";
+
+        let currentPage = 0;
+        let columns = [];
+
+        const conditionsEl = document.getElementById("conditions");
+        const keywordFieldEl = document.getElementById("keywordField");
+        const orderFieldEl = document.getElementById("orderField");
+        const schemaStatusEl = document.getElementById("schemaStatus");
+        const advancedModeEl = document.getElementById("advancedMode");
+        const settingsModalEl = document.getElementById("settingsModal");
+        const settingsContentEl = document.getElementById("settingsContent");
+        const settingsPanelEl = document.getElementById("settingsPanel");
+        const settingsHostEl = document.getElementById("settingsHost");
+
+        function indexToLetter(index) {
+            let letters = "";
+            let i = index + 1;
+            while (i > 0) {
+                const rem = (i - 1) % 26;
+                letters = String.fromCharCode(65 + rem) + letters;
+                i = Math.floor((i - 1) / 26);
+            }
+            return letters;
+        }
+
+        function getSheetURL(query) {
+            const base = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq`;
+            const params = `?tqx=out:json&gid=${GID}&t=${Date.now()}`;
+            return `${base}${params}&tq=${encodeURIComponent(query)}`;
+        }
+
+        async function loadSchema() {
+            const res = await fetch(getSheetURL("SELECT * LIMIT 1"));
+            const text = await res.text();
+            const json = JSON.parse(text.substring(47).slice(0, -2));
+            const cols = json.table.cols || [];
+
+            columns = cols.map((col, index) => ({
+                index,
+                letter: indexToLetter(index),
+                label: col.label || col.id || `欄位 ${index + 1}`,
+                type: col.type || "string"
+            }));
+
+            schemaStatusEl.textContent = `已載入 ${columns.length} 欄位`;
+            buildFieldSelectors();
+        }
+
+        function buildFieldSelectors() {
+            const fieldOptions = columns.map(col => `<option value="${col.index}">${col.label}</option>`).join("");
+            const textFields = columns.filter(col => col.type === "string");
+
+            keywordFieldEl.innerHTML = `<option value="ALL_TEXT">所有文字欄位</option>${fieldOptions}`;
+            orderFieldEl.innerHTML = `<option value="">不排序</option>${fieldOptions}`;
+
+            if (!textFields.length) {
+                keywordFieldEl.innerHTML = `<option value="">（無文字欄位）</option>`;
+                document.getElementById("keyword").disabled = true;
+            }
+
+            if (!conditionsEl.children.length) {
+                addConditionRow();
+            } else {
+                [...conditionsEl.children].forEach(row => refreshRowFieldOptions(row));
+            }
+        }
+
+        function addConditionRow() {
+            const row = document.createElement("div");
+            row.className = "condition-row";
+
+            const logicWrap = document.createElement("div");
+            logicWrap.className = "logic-wrap";
+            const logicSelect = document.createElement("select");
+            logicSelect.className = "logic";
+            logicSelect.innerHTML = `<option value="AND">AND</option><option value="OR">OR</option>`;
+            logicWrap.appendChild(logicSelect);
+
+            const groupStartWrap = document.createElement("div");
+            groupStartWrap.className = "group-wrap group-start";
+            const groupStartSelect = document.createElement("select");
+            groupStartSelect.className = "group-start";
+            groupStartSelect.innerHTML = `
+    <option value="">左括號</option>
+    <option value="("> ( </option>
+    <option value="(("> ( ( </option>
+    <option value="((("> ( ( ( </option>
+  `;
+            groupStartWrap.appendChild(groupStartSelect);
+
+            const fieldSelect = document.createElement("select");
+            fieldSelect.className = "field";
+
+            const typeBadge = document.createElement("span");
+            typeBadge.className = "type-badge";
+            typeBadge.textContent = "類型";
+
+            const fieldWrap = document.createElement("div");
+            fieldWrap.className = "field-wrap";
+            fieldWrap.appendChild(fieldSelect);
+            fieldWrap.appendChild(typeBadge);
+
+            const operatorSelect = document.createElement("select");
+            operatorSelect.className = "operator";
+
+            const valueWrap = document.createElement("div");
+            valueWrap.className = "value-wrap";
+
+            const groupEndWrap = document.createElement("div");
+            groupEndWrap.className = "group-wrap group-end";
+            const groupEndSelect = document.createElement("select");
+            groupEndSelect.className = "group-end";
+            groupEndSelect.innerHTML = `
+    <option value="">右括號</option>
+    <option value=")"> ) </option>
+    <option value="))"> ) ) </option>
+    <option value=")))"> ) ) ) </option>
+  `;
+            groupEndWrap.appendChild(groupEndSelect);
+
+            const removeBtn = document.createElement("button");
+            removeBtn.className = "remove";
+            removeBtn.textContent = "移除";
+            removeBtn.addEventListener("click", () => {
+                row.remove();
+                refreshLogicVisibility();
+            });
+
+            row.appendChild(logicWrap);
+            row.appendChild(groupStartWrap);
+            row.appendChild(fieldWrap);
+            row.appendChild(operatorSelect);
+            row.appendChild(valueWrap);
+            row.appendChild(groupEndWrap);
+            row.appendChild(removeBtn);
+
+            conditionsEl.appendChild(row);
+            refreshRowFieldOptions(row);
+            refreshLogicVisibility();
+        }
+
+        function refreshRowFieldOptions(row) {
+            const fieldSelect = row.querySelector(".field");
+            fieldSelect.innerHTML = columns.map(col => `<option value="${col.index}">${col.label}</option>`).join("");
+            fieldSelect.addEventListener("change", () => updateOperators(row));
+            updateOperators(row);
+        }
+
+        function updateOperators(row) {
+            const fieldIndex = Number(row.querySelector(".field").value);
+            const operatorSelect = row.querySelector(".operator");
+            const col = columns[fieldIndex];
+            const typeBadge = row.querySelector(".type-badge");
+
+            const ops = getOperatorsForType(col?.type || "string");
+            operatorSelect.innerHTML = ops.map(op => `<option value="${op.value}">${op.label}</option>`).join("");
+
+            operatorSelect.addEventListener("change", () => {
+                const opValue = operatorSelect.value;
+                const valueControl = row.querySelector(".value");
+                if (opValue === "is_empty" || opValue === "is_not_empty") {
+                    if (valueControl) {
+                        valueControl.value = "";
+                        valueControl.disabled = true;
+                    }
+                } else {
+                    if (valueControl) valueControl.disabled = false;
+                }
+            });
+
+            if (typeBadge && col) typeBadge.textContent = getTypeLabel(col.type);
+            setValueControl(row, col);
+        }
+
+        function getOperatorsForType(type) {
+            const common = [
+                { value: "is_empty", label: "為空" },
+                { value: "is_not_empty", label: "不為空" }
+            ];
+
+            if (type === "number") {
+                return [
+                    { value: "=", label: "等於" },
+                    { value: "!=", label: "不等於" },
+                    { value: ">", label: "大於" },
+                    { value: ">=", label: "大於等於" },
+                    { value: "<", label: "小於" },
+                    { value: "<=", label: "小於等於" },
+                    ...common
+                ];
+            }
+
+            if (type === "boolean") {
+                return [
+                    { value: "=", label: "等於" },
+                    { value: "!=", label: "不等於" },
+                    ...common
+                ];
+            }
+
+            if (type === "date" || type === "datetime") {
+                return [
+                    { value: "=", label: "等於" },
+                    { value: ">", label: "晚於" },
+                    { value: "<", label: "早於" },
+                    { value: ">=", label: "不早於" },
+                    { value: "<=", label: "不晚於" },
+                    ...common
+                ];
+            }
+
+            return [
+                { value: "contains", label: "包含" },
+                { value: "starts", label: "開頭為" },
+                { value: "ends", label: "結尾為" },
+                { value: "=", label: "等於" },
+                { value: "!=", label: "不等於" },
+                ...common
+            ];
+        }
+
+        function getPlaceholderForType(type) {
+            if (type === "number") return "例如：80";
+            if (type === "date") return "YYYY-MM-DD";
+            if (type === "datetime") return "YYYY-MM-DD HH:MM:SS";
+            if (type === "boolean") return "";
+            return "輸入條件值";
+        }
+
+        function getTypeLabel(type) {
+            if (type === "number") return "數字";
+            if (type === "date") return "日期";
+            if (type === "datetime") return "日期時間";
+            if (type === "boolean") return "布林";
+            if (type === "string") return "文字";
+            return "未知";
+        }
+
+        function setValueControl(row, col) {
+            const valueWrap = row.querySelector(".value-wrap");
+            if (!valueWrap) return;
+
+            const prev = row.querySelector(".value");
+            const prevValue = prev ? prev.value : "";
+
+            const type = col?.type || "string";
+            let control;
+
+            if (type === "boolean") {
+                control = document.createElement("select");
+                control.innerHTML = `
+      <option value="">請選擇</option>
+      <option value="true">true</option>
+      <option value="false">false</option>
+    `;
+            } else {
+                control = document.createElement("input");
+                if (type === "number") {
+                    control.type = "number";
+                    control.step = "any";
+                } else if (type === "date") {
+                    control.type = "date";
+                } else if (type === "datetime") {
+                    control.type = "datetime-local";
+                    control.step = "1";
+                } else {
+                    control.type = "text";
+                }
+                control.placeholder = getPlaceholderForType(type);
+            }
+
+            control.className = "value";
+
+            if (prevValue) {
+                if (type === "datetime" && prevValue.includes(" ")) {
+                    control.value = prevValue.replace(" ", "T");
+                } else {
+                    control.value = prevValue;
+                }
+            }
+
+            valueWrap.innerHTML = "";
+            valueWrap.appendChild(control);
+
+            const opValue = row.querySelector(".operator")?.value;
+            if (opValue === "is_empty" || opValue === "is_not_empty") {
+                control.value = "";
+                control.disabled = true;
+            }
+        }
+
+        function normalizeDateTime(value) {
+            if (!value) return value;
+            let v = value.trim();
+            if (v.includes("T")) v = v.replace("T", " ");
+            if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(v)) v += ":00";
+            return v;
+        }
+
+        function refreshLogicVisibility() {
+            const rows = [...conditionsEl.children];
+            rows.forEach((row, idx) => {
+                if (idx === 0) row.classList.add("first");
+                else row.classList.remove("first");
+            });
+        }
+
+        function escapeString(value) {
+            return value.replace(/'/g, "\\'");
+        }
+
+        function formatValue(col, value) {
+            const type = col.type || "string";
+
+            if (type === "number") return value;
+            if (type === "boolean") return value.toLowerCase() === "true" ? "true" : "false";
+            if (type === "date") return `date '${value}'`;
+            if (type === "datetime") return `datetime '${normalizeDateTime(value)}'`;
+
+            return `'${escapeString(value)}'`;
+        }
+
+        function wrapCondition(condition, groupStart, groupEnd) {
+            const left = groupStart ? groupStart.replace(/\s+/g, "") : "";
+            const right = groupEnd ? groupEnd.replace(/\s+/g, "") : "";
+            const prefix = left ? `${left} ` : "";
+            const suffix = right ? ` ${right}` : "";
+            return `${prefix}${condition}${suffix}`;
+        }
+
+        function buildConditionFromRow(row) {
+            const fieldIndex = Number(row.querySelector(".field").value);
+            const op = row.querySelector(".operator").value;
+            const valueControl = row.querySelector(".value");
+            const value = valueControl ? valueControl.value.trim() : "";
+            const col = columns[fieldIndex];
+            const groupStart = row.querySelector(".group-start")?.value || "";
+            const groupEnd = row.querySelector(".group-end")?.value || "";
+
+            if (!col) return "";
+            if (op === "is_empty") return wrapCondition(`${col.letter} is null`, groupStart, groupEnd);
+            if (op === "is_not_empty") return wrapCondition(`${col.letter} is not null`, groupStart, groupEnd);
+
+            if (!value) return "";
+
+            if (col.type === "string") {
+                const safe = escapeString(value);
+                if (op === "contains") return wrapCondition(`${col.letter} like '%${safe}%'`, groupStart, groupEnd);
+                if (op === "starts") return wrapCondition(`${col.letter} like '${safe}%'`, groupStart, groupEnd);
+                if (op === "ends") return wrapCondition(`${col.letter} like '%${safe}'`, groupStart, groupEnd);
+                if (op === "!=") return wrapCondition(`${col.letter} != '${safe}'`, groupStart, groupEnd);
+                return wrapCondition(`${col.letter} = '${safe}'`, groupStart, groupEnd);
+            }
+
+            return wrapCondition(`${col.letter} ${op} ${formatValue(col, value)}`, groupStart, groupEnd);
+        }
+
+        function buildKeywordCondition() {
+            const keyword = document.getElementById("keyword").value.trim();
+            const target = keywordFieldEl.value;
+
+            if (!keyword) return "";
+
+            const safe = escapeString(keyword);
+
+            if (target === "ALL_TEXT") {
+                const textCols = columns.filter(col => col.type === "string");
+                if (!textCols.length) return "";
+                const parts = textCols.map(col => `${col.letter} like '%${safe}%'`);
+                return `(${parts.join(" OR ")})`;
+            }
+
+            const col = columns.find(c => String(c.index) === String(target));
+            if (!col) return "";
+            return `${col.letter} like '%${safe}%'`;
+        }
+
+        function buildQuery() {
+            const limit = Number(document.getElementById("limit").value || 5);
+            const orderField = orderFieldEl.value;
+            const orderDir = document.getElementById("orderDir").value;
+
+            let query = "SELECT *";
+
+            const rows = [...conditionsEl.children];
+            const conditions = [];
+
+            rows.forEach((row, idx) => {
+                const condition = buildConditionFromRow(row);
+                if (!condition) return;
+
+                if (conditions.length === 0) {
+                    conditions.push(condition);
+                } else {
+                    const logic = row.querySelector(".logic").value;
+                    conditions.push(`${logic} ${condition}`);
+                }
+            });
+
+            const keywordCondition = buildKeywordCondition();
+            if (keywordCondition) {
+                if (!conditions.length) {
+                    conditions.push(keywordCondition);
+                } else {
+                    const keywordLogic = document.getElementById("keywordLogic").value || "AND";
+                    conditions.push(`${keywordLogic} ${keywordCondition}`);
+                }
+            }
+
+            if (conditions.length) {
+                query += ` WHERE ${conditions.join(" ")}`;
+            }
+
+            if (orderField && orderDir) {
+                const col = columns.find(c => String(c.index) === String(orderField));
+                if (col) query += ` ORDER BY ${col.letter} ${orderDir}`;
+            }
+
+            query += ` LIMIT ${limit} OFFSET ${currentPage * limit}`;
+
+            return query;
+        }
+
+        async function fetchData() {
+            const query = buildQuery();
+            document.getElementById("queryPreview").textContent = query;
+
+            const res = await fetch(getSheetURL(query));
+            const text = await res.text();
+            const json = JSON.parse(text.substring(47).slice(0, -2));
+
+            return json.table.rows.map(row => row.c.map(cell => cell?.v ?? ""));
+        }
+
+        function render(data) {
+            const app = document.getElementById("app");
+            document.getElementById("countBadge").textContent = `${data.length} 筆`;
+
+            if (!data.length) {
+                app.innerHTML = "<div class=\"card\">沒有符合條件的資料</div>";
+                return;
+            }
+
+            const html = data.map(row => {
+                const fields = columns.map((col, idx) => {
+                    const value = row[idx] ?? "";
+                    return `
+        <div class=\"field\">
+          <span>${col.label}</span>
+          <strong>${value}</strong>
+        </div>
+      `;
+                }).join("");
+
+                return `
+      <div class=\"card\">
+        <div class=\"card-title\">${row[0] ?? "資料"}</div>
+        ${fields}
+      </div>
+    `;
+            }).join("");
+
+            app.innerHTML = html;
+        }
+
+        async function update() {
+            const data = await fetchData();
+            render(data);
+            document.getElementById("page").innerText = currentPage + 1;
+        }
+
+        function resetAndSearch() {
+            currentPage = 0;
+            update();
+        }
+
+        function bindEvents() {
+            document.getElementById("addCondition").addEventListener("click", addConditionRow);
+            document.getElementById("clearCondition").addEventListener("click", () => {
+                conditionsEl.innerHTML = "";
+                addConditionRow();
+            });
+
+            advancedModeEl.addEventListener("change", () => {
+                conditionsEl.classList.toggle("advanced", advancedModeEl.checked);
+            });
+
+            document.getElementById("openSettings").addEventListener("click", () => {
+                settingsContentEl.innerHTML = "";
+                settingsContentEl.appendChild(settingsPanelEl);
+                settingsPanelEl.classList.remove("hidden");
+                settingsModalEl.classList.add("show");
+                settingsModalEl.setAttribute("aria-hidden", "false");
+            });
+
+            document.getElementById("closeSettings").addEventListener("click", () => {
+                settingsModalEl.classList.remove("show");
+                settingsModalEl.setAttribute("aria-hidden", "true");
+                settingsHostEl.appendChild(settingsPanelEl);
+                settingsPanelEl.classList.add("hidden");
+            });
+
+            settingsModalEl.addEventListener("click", (event) => {
+                if (event.target === settingsModalEl) {
+                    settingsModalEl.classList.remove("show");
+                    settingsModalEl.setAttribute("aria-hidden", "true");
+                    settingsHostEl.appendChild(settingsPanelEl);
+                    settingsPanelEl.classList.add("hidden");
+                }
+            });
+
+            document.getElementById("searchBtn").addEventListener("click", resetAndSearch);
+            document.getElementById("limit").addEventListener("change", resetAndSearch);
+            document.getElementById("orderDir").addEventListener("change", resetAndSearch);
+            orderFieldEl.addEventListener("change", resetAndSearch);
+
+            document.getElementById("prevBtn").addEventListener("click", () => {
+                if (currentPage > 0) {
+                    currentPage--;
+                    update();
+                }
+            });
+
+            document.getElementById("nextBtn").addEventListener("click", () => {
+                currentPage++;
+                update();
+            });
+        }
+
+        async function init() {
+            bindEvents();
+            conditionsEl.classList.toggle("advanced", advancedModeEl.checked);
+            await loadSchema();
+            update();
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
