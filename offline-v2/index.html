@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🧠 離線知識庫</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ─── Header ─── -->
+  <header class="header">
+    <div class="header-left">
+      <button id="sidebarToggle" class="icon-btn" title="展開/收合側欄">☰</button>
+      <span class="logo">🧠</span>
+      <span class="logo-text">離線知識庫</span>
+    </div>
+    <div class="header-center">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input id="search" type="text" placeholder="搜尋標題、標籤、摘要…" autocomplete="off" />
+        <button id="clearBtn" class="clear-btn" title="清除">✕</button>
+      </div>
+    </div>
+    <div class="header-right">
+      <span id="countBadge" class="count-badge">0 篇</span>
+      <button id="addBtn" class="icon-btn add-btn edit-action" title="新增文章">＋</button>
+      <button id="syncBtn" class="icon-btn" title="同步 / 匯出入">⇄</button>
+      <button id="lockBtn" class="icon-btn" title="權限設定">🔓</button>
+      <button id="refreshBtn" class="icon-btn" title="重新載入">↺</button>
+    </div>
+  </header>
+
+  <!-- ─── Main Layout ─── -->
+  <div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">全部</button>
+        <button class="filter-btn" data-filter="starred">⭐ 收藏</button>
+        <button class="filter-btn" data-filter="recent">🕐 最近</button>
+      </div>
+      <div id="tagCloud" class="tag-cloud"></div>
+      <div id="cardList" class="card-list"></div>
+      <div id="emptyState" class="empty-state" style="display:none">
+        <div class="empty-icon">📭</div>
+        <div>找不到符合的文章</div>
+        <small>試試其他關鍵字</small>
+      </div>
+    </aside>
+
+    <!-- Viewer -->
+    <main class="viewer">
+
+      <!-- Welcome Screen -->
+      <div id="welcomeScreen" class="welcome-screen">
+        <div class="welcome-icon">📚</div>
+        <h2>選擇一篇文章開始閱讀</h2>
+        <p>點擊左側卡片，或按右上角 ＋ 新增文章</p>
+        <div class="welcome-stats" id="welcomeStats"></div>
+        <div class="welcome-tips">
+          <div class="tip">＋ 新增文章，內建所見即所得編輯器</div>
+          <div class="tip">⇄ 匯出 / 匯入整座知識庫</div>
+          <div class="tip">🔓 設定密碼鎖定編輯權限</div>
+        </div>
+      </div>
+
+      <!-- Viewer Toolbar -->
+      <div id="viewerToolbar" class="viewer-toolbar" style="display:none">
+        <div class="toolbar-left">
+          <span id="viewerTitle" class="viewer-title"></span>
+          <span id="viewerTag" class="viewer-tag-pill"></span>
+        </div>
+        <div class="toolbar-right">
+          <button id="editBtn" class="icon-btn edit-action" title="編輯此文章">✎</button>
+          <button id="deleteBtn" class="icon-btn edit-action" title="刪除此文章">🗑</button>
+          <button id="starBtn" class="icon-btn" title="收藏">☆</button>
+          <button id="newTabBtn" class="icon-btn" title="在新分頁開啟">↗</button>
+          <button id="closeBtn" class="icon-btn" title="關閉">✕</button>
+        </div>
+      </div>
+
+      <!-- iFrame Preview -->
+      <iframe id="preview" style="display:none" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
+    </main>
+  </div>
+
+  <!-- ═══ Editor Modal ═══ -->
+  <div id="editorModal" class="modal-overlay">
+    <div class="modal editor-modal">
+      <div class="modal-header">
+        <h3 id="editorModalTitle">新增文章</h3>
+        <button class="modal-close" data-close="editorModal">✕</button>
+      </div>
+
+      <div class="editor-meta">
+        <div class="field">
+          <label>標題</label>
+          <input id="edTitle" type="text" placeholder="文章標題" />
+        </div>
+        <div class="field-row">
+          <div class="field" style="flex:1">
+            <label>標籤 <small>（逗號分隔）</small></label>
+            <input id="edTags" type="text" placeholder="交易, 心理, 策略" />
+          </div>
+        </div>
+        <div class="field">
+          <label>摘要</label>
+          <input id="edDesc" type="text" placeholder="簡短描述（選填）" />
+        </div>
+      </div>
+
+      <!-- WYSIWYG Toolbar -->
+      <div class="wysiwyg-toolbar">
+        <button type="button" data-cmd="bold" title="粗體 (Ctrl+B)"><b>B</b></button>
+        <button type="button" data-cmd="italic" title="斜體 (Ctrl+I)"><i>I</i></button>
+        <button type="button" data-cmd="underline" title="底線 (Ctrl+U)"><u>U</u></button>
+        <button type="button" data-cmd="strikeThrough" title="刪除線"><s>S</s></button>
+        <span class="tb-sep"></span>
+        <button type="button" data-cmd="formatBlock" data-val="H1" title="標題 1">H1</button>
+        <button type="button" data-cmd="formatBlock" data-val="H2" title="標題 2">H2</button>
+        <button type="button" data-cmd="formatBlock" data-val="H3" title="標題 3">H3</button>
+        <button type="button" data-cmd="formatBlock" data-val="P" title="段落">¶</button>
+        <span class="tb-sep"></span>
+        <button type="button" data-cmd="insertUnorderedList" title="項目清單">•</button>
+        <button type="button" data-cmd="insertOrderedList" title="數字清單">1.</button>
+        <button type="button" data-cmd="formatBlock" data-val="BLOCKQUOTE" title="引用">❝</button>
+        <span class="tb-sep"></span>
+        <button type="button" id="insertCodeBtn" title="程式碼區塊">&lt;/&gt;</button>
+        <button type="button" id="insertLinkBtn" title="插入連結">🔗</button>
+        <button type="button" id="insertHrBtn" title="分隔線">―</button>
+        <span class="tb-sep"></span>
+        <button type="button" data-cmd="removeFormat" title="清除格式">⌫</button>
+        <button type="button" id="toggleSourceBtn" title="切換 HTML 原始碼">{ }</button>
+      </div>
+
+      <!-- Editable area -->
+      <div id="editorArea" class="editor-area" contenteditable="true"></div>
+      <textarea id="sourceArea" class="source-area" style="display:none" spellcheck="false"></textarea>
+
+      <div class="modal-footer">
+        <span id="editorCharCount" class="text-dim text-sm"></span>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost" data-close="editorModal">取消</button>
+          <button id="editorSaveBtn" class="btn btn-primary">儲存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Delete Confirm Modal ═══ -->
+  <div id="deleteModal" class="modal-overlay">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>確認刪除</h3>
+        <button class="modal-close" data-close="deleteModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="delete-warning">⚠️</div>
+        <p>確定要刪除「<strong id="deleteTarget"></strong>」嗎？</p>
+        <p class="text-dim">此操作無法復原。</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="deleteModal">取消</button>
+        <button id="confirmDeleteBtn" class="btn btn-danger">確認刪除</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Sync Modal ═══ -->
+  <div id="syncModal" class="modal-overlay">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>同步 / 匯出入</h3>
+        <button class="modal-close" data-close="syncModal">✕</button>
+      </div>
+      <div class="modal-body sync-body">
+        <button id="exportBtn" class="btn btn-block">📤 匯出知識庫（JSON）</button>
+        <button id="importBtn" class="btn btn-block">📥 匯入知識庫（JSON）</button>
+        <input id="importFile" type="file" accept=".json" style="display:none" />
+        <div class="sep"></div>
+        <button id="importDbBtn" class="btn btn-block btn-outline">📂 從 database.js 重新匯入</button>
+        <p class="text-dim text-sm" style="margin-top:8px">重新讀取 database.js 的檔案索引並合併，不會覆蓋已編輯的文章。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Permission Modal ═══ -->
+  <div id="permModal" class="modal-overlay">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 id="permTitle">權限設定</h3>
+        <button class="modal-close" data-close="permModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <!-- Set password view -->
+        <div id="permSetView">
+          <p class="mb-12">設定密碼後，需要輸入密碼才能新增、編輯、刪除文章。</p>
+          <div class="field"><label>密碼</label><input id="permPwdSet" type="password" placeholder="設定密碼" /></div>
+          <div class="field"><label>確認密碼</label><input id="permPwdConfirm" type="password" placeholder="再輸入一次" /></div>
+        </div>
+        <!-- Unlock view -->
+        <div id="permUnlockView" style="display:none">
+          <p class="mb-12">輸入密碼以解鎖編輯功能。</p>
+          <div class="field"><input id="permPwdUnlock" type="password" placeholder="輸入密碼" /></div>
+        </div>
+        <!-- Manage view -->
+        <div id="permManageView" style="display:none">
+          <p class="mb-12">✅ 編輯功能已解鎖。</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="permModal">取消</button>
+        <button id="permRemoveBtn" class="btn btn-danger" style="display:none">移除密碼</button>
+        <button id="permActionBtn" class="btn btn-primary">確認</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Toast ─── -->
+  <div id="toast" class="toast"></div>
+
+  <script src="database.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
