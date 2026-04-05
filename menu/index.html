@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>A TOAST</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box }
+
+        body {
+            background: #fff;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #1a1a1a;
+            padding: 32px 28px;
+            min-height: 100vh;
+        }
+
+        .menu-container { max-width: 1080px; margin: 0 auto; }
+
+        /* ===== HEADER ===== */
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .brand-name {
+            font-size: 2em;
+            font-weight: 900;
+            letter-spacing: .12em;
+            line-height: 1;
+        }
+
+        .brand-tagline {
+            font-size: .78em;
+            letter-spacing: .18em;
+            color: #888;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        .logo-circle {
+            width: 76px; height: 76px;
+            border: 2.5px solid #1a1a1a;
+            border-radius: 50%;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .logo-sol  { font-size: 1.45em; font-weight: 900; line-height: 1; letter-spacing: .04em; }
+        .logo-sub  { font-size: .58em;  font-weight: 600; letter-spacing: .1em; margin-top: 2px; }
+
+        .info-strip {
+            display: flex;
+            gap: 18px;
+            font-size: .8em;
+            color: #666;
+            margin: 8px 0 10px;
+            flex-wrap: wrap;
+        }
+
+        .info-strip span { display: flex; align-items: center; gap: 5px; }
+
+        .rules {
+            font-size: .76em;
+            color: #888;
+            line-height: 1.75;
+            border-top: 1px solid #ddd;
+            padding-top: 8px;
+        }
+
+        .header-divider {
+            border: none;
+            border-top: 2.5px solid #1a1a1a;
+            margin: 14px 0 0;
+        }
+
+        /* ===== CONTROLS ===== */
+        .controls-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 10px 0 6px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .lang-switcher { display: flex; gap: 4px; flex-wrap: wrap; }
+
+        .lang-btn {
+            background: none;
+            border: 1px solid #ccc;
+            color: #1a1a1a;
+            padding: 3px 9px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: .75em;
+            font-weight: 700;
+            letter-spacing: .02em;
+            transition: border-color .15s, background .15s, color .15s;
+        }
+        .lang-btn:hover { border-color: #1a1a1a; }
+        .lang-btn[aria-pressed="true"] {
+            background: #1a1a1a;
+            color: #fff;
+            border-color: #1a1a1a;
+        }
+
+        .ctrl-sep { color: #ddd; font-size: .85em; }
+
+        .search-input {
+            background: none;
+            border: 1px solid #ccc;
+            color: #1a1a1a;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: .8em;
+            min-width: 170px;
+        }
+        .search-input::placeholder { color: #bbb; }
+        .search-input:focus { outline: 2px solid #1a1a1a; outline-offset: 1px; border-color: transparent; }
+
+        .toggle-label {
+            display: flex; align-items: center; gap: 5px;
+            font-size: .78em; color: #666; cursor: pointer;
+        }
+
+        .refresh-btn {
+            margin-left: auto;
+            background: none;
+            border: 1px solid #ccc;
+            color: #1a1a1a;
+            padding: 3px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: .75em;
+            font-weight: 700;
+        }
+        .refresh-btn:hover { border-color: #1a1a1a; }
+        .refresh-btn[disabled] { opacity: .45; cursor: not-allowed; }
+
+        .spin { display: inline-block; animation: spin .9s linear infinite }
+        @keyframes spin { to { transform: rotate(360deg) } }
+
+        /* ===== TOC ===== */
+        .toc {
+            display: flex; gap: 6px; flex-wrap: wrap;
+            padding: 8px 0 2px;
+        }
+        .toc a {
+            font-size: .72em; color: #999;
+            text-decoration: none;
+            border: 1px solid #e0e0e0;
+            padding: 2px 8px;
+            border-radius: 2px;
+            letter-spacing: .04em;
+        }
+        .toc a:hover { color: #1a1a1a; border-color: #1a1a1a; }
+
+        /* ===== MENU LAYOUT ===== */
+        .menu-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 52px;
+            margin-top: 18px;
+        }
+
+        /* ===== SECTION ===== */
+        .menu-section { margin-bottom: 30px; }
+
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            border-bottom: 2px solid #1a1a1a;
+            padding-bottom: 3px;
+            margin-bottom: 0;
+        }
+
+        .section-zh {
+            font-size: .8em;
+            font-weight: 600;
+            color: #666;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .section-en {
+            font-size: 1.22em;
+            font-weight: 900;
+            letter-spacing: .07em;
+            flex: 1;
+        }
+
+        .section-price-col {
+            font-size: .72em;
+            color: #aaa;
+            white-space: nowrap;
+            letter-spacing: .04em;
+        }
+
+        /* ===== MENU ITEM ===== */
+        .menu-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 7px;
+            padding: 7px 0 6px;
+            border-bottom: 1px solid #ebebeb;
+        }
+
+        .item-circle {
+            color: #bbb;
+            flex-shrink: 0;
+            font-size: .88em;
+            margin-top: 2px;
+            line-height: 1;
+        }
+
+        .item-body { flex: 1; min-width: 0; }
+
+        .item-primary {
+            font-size: .96em;
+            font-weight: 700;
+            line-height: 1.25;
+        }
+
+        .item-secondary {
+            font-size: .78em;
+            color: #999;
+            margin-top: 1px;
+            line-height: 1.3;
+        }
+
+        .badges { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+
+        .badge {
+            font-size: .68em;
+            border: 1px solid #ccc;
+            border-radius: 2px;
+            padding: 1px 5px;
+            color: #888;
+        }
+        .badge.vegan  { border-color: #6aaa6a; color: #3a7a3a; }
+        .badge.spicy  { border-color: #c07030; color: #904010; }
+
+        .item-price {
+            font-size: .92em;
+            font-weight: 700;
+            white-space: nowrap;
+            min-width: 36px;
+            text-align: right;
+            padding-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .soldout .item-primary,
+        .soldout .item-secondary {
+            text-decoration: line-through;
+            opacity: .4;
+        }
+
+        /* ===== LOADING / ERROR ===== */
+        .loading {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 56px;
+            color: #bbb;
+            font-size: .92em;
+            letter-spacing: .06em;
+        }
+
+        .error {
+            grid-column: 1/-1;
+            border: 1.5px solid #c33;
+            border-radius: 4px;
+            padding: 18px;
+            color: #c33;
+        }
+        .error h3 { margin-bottom: 6px; }
+        .error-details {
+            margin-top: 8px;
+            font-family: ui-monospace, Consolas, monospace;
+            font-size: .83em;
+            color: #888;
+            line-height: 1.6;
+        }
+        .error-details a { color: #888; }
+
+        :focus-visible { outline: 2px solid #1a1a1a; outline-offset: 2px; border-radius: 2px; }
+
+        /* ===== PRINT ===== */
+        @media print {
+            .controls-bar, .toc { display: none }
+            body { padding: 16px; }
+            .menu-content { gap: 0 32px; }
+        }
+
+        @media (max-width: 680px) {
+            .menu-content { grid-template-columns: 1fr }
+            .header-top { gap: 12px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="menu-container">
+
+        <header>
+            <div class="header-top">
+                <div class="brand-block">
+                    <div class="brand-name">A TOAST</div>
+                    <div class="brand-tagline">Menu</div>
+                </div>
+                <!-- <div class="logo-circle" aria-label="SOL Bistro">
+                    <div class="logo-sol">A</div>
+                    <div class="logo-sub">TOAST</div>
+                </div> -->
+            </div>
+
+            <div class="info-strip">
+                <span>⊙ 外帶 To Go</span>
+                <span>⊕ 內用 For Here</span>
+                <span>🌐 FREE Wi-Fi &nbsp;<strong>atoast</strong></span>
+            </div>
+
+            <div class="rules">
+                ☑ No outside food or drink allowed &nbsp;&nbsp;
+                ☑ No playing cards &nbsp;&nbsp;
+                ☑ Minimum charge one drink or one meal per person &nbsp;&nbsp;
+                ☑ Underage drinking or smoking is not allowed
+            </div>
+
+            <hr class="header-divider" />
+
+            <div class="controls-bar">
+                <div class="language-switcher lang-switcher" role="tablist" aria-label="Language switcher"></div>
+                <span class="ctrl-sep">|</span>
+                <!-- <div>
+                    <label for="q" style="position:absolute;left:-9999px">Search</label>
+                    <input id="q" class="search-input" type="search"
+                           placeholder="Search 搜尋 / 検索" />
+                </div> -->
+                <label class="toggle-label">
+                    <input id="hideSoldout" type="checkbox" />
+                    隱藏售罄
+                </label>
+                <button id="refreshBtn" class="refresh-btn" type="button" title="即時刷新">
+                    <span id="refreshIcon">↺</span> 刷新
+                </button>
+            </div>
+
+            <nav class="toc" aria-label="Categories"></nav>
+        </header>
+
+        <main id="menuContent" class="menu-content" aria-live="polite">
+            <div class="loading">正在載入菜單 …</div>
+        </main>
+
+    </div>
+
+    <script>
+        // =============================================
+        // ★  CONFIG — 只需修改這三個變數  ★
+        // =============================================
+
+        const SHEET_ID = '1pdPfGcjFCr4V-BYCu7aik5B1Bqa5_99ODYWxUfVe5Uk';
+        const GID = '0';
+
+        const COLUMN_MAP = [
+            'category',   // A
+            'zh',         // B
+            'en',         // C
+            'ja',         // D
+            'ko',         // E
+            'fr',         // F
+            'th',         // G
+            'zh-CN',        // H
+            'vi',         // I
+            'price',      // J
+            'soldout',    // K
+            'vegan',      // L
+            'spicy',      // M
+            'contains',   // N
+            'img',        // O
+        ];
+
+        // 分類顯示順序與左右欄
+        const CATEGORIES = [
+            { name: 'SALAD',   column: 'left'  },
+            { name: 'PAELLA',  column: 'left'  },
+            { name: 'PASTA',   column: 'left'  },
+            { name: 'PIZZA',   column: 'left'  },
+            { name: 'TAPAS',   column: 'right' },
+            { name: 'DESSERT', column: 'right' },
+        ];
+
+        // 分類中文對照（可自行擴充）
+        const CATEGORY_ZH = {
+            'SALAD':   '沙拉類',
+            'PAELLA':  '燉飯類',
+            'PASTA':   '義大利麵',
+            'PIZZA':   '披薩類',
+            'TAPAS':   '小點類',
+            'DESSERT': '甜點類',
+            'DRINK':   '飲品類',
+            'COFFEE':  '咖啡',
+            'TEA':     '茶飲',
+            'BEER':    '啤酒',
+            'WINE':    '葡萄酒',
+            'SOUP':    '湯品類',
+            'SANDWICH':'吐司類',
+            'BURGER':  '漢堡類',
+        };
+
+        const LANGUAGES = [
+            { code: 'zh',  label: '中文'       },
+            { code: 'en',  label: 'English'    },
+            { code: 'ja',  label: '日本語'      },
+            { code: 'ko',  label: '한국어'      },
+            { code: 'fr',  label: 'Français'   },
+            { code: 'th',  label: 'ไทย'        },
+            { code: 'zh-CN', label: '简体'   },
+            { code: 'vi',  label: 'Tiếng Việt' },
+        ];
+
+        // =============================================
+        // STATE
+        // =============================================
+        let menuData   = {};
+        let currentLang = 'zh';
+        let query       = '';
+        let hideSoldOut = false;
+
+        // =============================================
+        // INIT
+        // =============================================
+        function init() {
+            setupLanguageSwitcher();
+            setupEventListeners();
+            loadMenu();
+        }
+
+        function setupLanguageSwitcher() {
+            const container = document.querySelector('.language-switcher');
+            LANGUAGES.forEach(lang => {
+                const btn = document.createElement('button');
+                btn.className = 'lang-btn';
+                btn.textContent = lang.label;
+                btn.setAttribute('role', 'tab');
+                btn.setAttribute('aria-pressed', String(lang.code === currentLang));
+                btn.addEventListener('click', () => switchLanguage(lang.code, btn));
+                container.appendChild(btn);
+            });
+        }
+
+        function setupEventListeners() {
+            document.getElementById('q').addEventListener('input', e => {
+                query = e.target.value.toLowerCase().trim();
+                renderMenu(menuData);
+            });
+            document.getElementById('hideSoldout').addEventListener('change', e => {
+                hideSoldOut = e.target.checked;
+                renderMenu(menuData);
+            });
+            const refreshBtn = document.getElementById('refreshBtn');
+            refreshBtn.addEventListener('click', () => {
+                refreshBtn.disabled = true;
+                document.getElementById('refreshIcon').classList.add('spin');
+                loadMenu(true).finally(() => {
+                    refreshBtn.disabled = false;
+                    document.getElementById('refreshIcon').classList.remove('spin');
+                });
+            });
+        }
+
+        function switchLanguage(lang, btn) {
+            currentLang = lang;
+            document.querySelectorAll('.lang-btn').forEach(b => b.setAttribute('aria-pressed', 'false'));
+            btn.setAttribute('aria-pressed', 'true');
+            renderMenu(menuData);
+        }
+
+        // =============================================
+        // DATA LOADING — Google Sheets gviz/tq
+        // =============================================
+        function buildSheetURL(tq = 'SELECT *') {
+            const base = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq`;
+            return `${base}?tqx=out:json&gid=${encodeURIComponent(GID)}&t=${Date.now()}&tq=${encodeURIComponent(tq)}`;
+        }
+
+        function parseGvizResponse(text) {
+            const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/);
+            if (!match) throw new Error('無法解析 gviz 回應格式');
+            return JSON.parse(match[1]);
+        }
+
+        function gvizTableToMenuData(table) {
+            const rows = table.rows || [];
+            const grouped = {};
+
+            rows.forEach(row => {
+                if (!row || !row.c) return;
+                const cells = row.c;
+                const item  = {};
+
+                COLUMN_MAP.forEach((field, idx) => {
+                    if (field === 'skip') return;
+                    const cell  = cells[idx];
+                    item[field] = (cell && cell.v !== null && cell.v !== undefined)
+                        ? String(cell.v).trim()
+                        : '';
+                });
+
+                const cat = item.category ? item.category.toUpperCase() : '';
+                if (!cat) return;
+
+                const itemWithoutCat = { ...item };
+                delete itemWithoutCat.category;
+                (grouped[cat] ||= []).push(itemWithoutCat);
+            });
+
+            return grouped;
+        }
+
+        async function loadMenu(silent = false) {
+            const menuContent = document.getElementById('menuContent');
+            if (!silent) {
+                menuContent.innerHTML = '<div class="loading">正在載入菜單 …</div>';
+            }
+
+            try {
+                if (!SHEET_ID || SHEET_ID === 'YOUR_SPREADSHEET_ID_HERE') {
+                    throw new Error('請先設定 SHEET_ID（試算表 ID）');
+                }
+
+                const res = await fetch(buildSheetURL('SELECT *'), { cache: 'no-store' });
+                if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+
+                const text = await res.text();
+                const gviz = parseGvizResponse(text);
+
+                if (gviz.status === 'error') {
+                    const msgs = (gviz.errors || []).map(e => e.detailed_message || e.message).join('; ');
+                    throw new Error(`試算表查詢失敗：${msgs}`);
+                }
+
+                const table = gviz.table;
+                if (!table || !table.rows || !table.rows.length) {
+                    throw new Error('試算表回傳空資料，請確認工作表 gid 與資料列是否正確');
+                }
+
+                menuData = gvizTableToMenuData(table);
+
+                if (!Object.keys(menuData).length) {
+                    menuContent.innerHTML = `
+                        <div class="error">
+                            <h3>⚠ 沒有可顯示的菜單</h3>
+                            <div class="error-details">
+                                資料已讀取，但找不到 category 欄位或所有列的 category 皆為空白。<br/>
+                                請確認試算表第一欄（A欄）為 category，且每列都有填寫類別名稱。
+                            </div>
+                        </div>`;
+                    return;
+                }
+
+                renderMenu(menuData);
+
+            } catch (err) {
+                console.error(err);
+                menuContent.innerHTML = `
+                    <div class="error">
+                        <h3>✕ 載入菜單失敗</h3>
+                        <p><strong>${escapeHtml(err.message)}</strong></p>
+                        <div class="error-details">
+                            請確認：<br/>
+                            1. SHEET_ID 與 GID 設定正確<br/>
+                            2. 試算表已設為「知道連結的人可以檢視」<br/>
+                            3. 試算表欄位順序與 COLUMN_MAP 一致<br/><br/>
+                            <a href="${buildSheetURL('SELECT * LIMIT 5').replace(/&t=\d+/, '')}"
+                               target="_blank">點此測試試算表連線</a>
+                        </div>
+                    </div>`;
+            }
+        }
+
+        // =============================================
+        // RENDERING
+        // =============================================
+        function renderMenu(data) {
+            const menuContent = document.getElementById('menuContent');
+
+            const fixedHasData = CATEGORIES.some(cat => {
+                const arr = data[cat.name];
+                return Array.isArray(arr) && arr.length > 0;
+            });
+
+            const effectiveCategories = fixedHasData
+                ? CATEGORIES.map(c => c.name)
+                : Object.keys(data);
+
+            const left  = document.createElement('div');
+            const right = document.createElement('div');
+
+            const toc = document.querySelector('.toc');
+            toc.innerHTML = '';
+
+            effectiveCategories.forEach(name => {
+                const items = data[name];
+                if (!Array.isArray(items) || !items.length) return;
+                if (!items.some(it => passFilters(it))) return;
+                const a = document.createElement('a');
+                a.href = `#cat-${name}`;
+                a.textContent = (CATEGORY_ZH[name] ? `${CATEGORY_ZH[name]} ` : '') + name;
+                toc.appendChild(a);
+            });
+
+            effectiveCategories.forEach((name, idx) => {
+                const items = data[name];
+                if (!Array.isArray(items) || !items.length) return;
+                const filtered = items.filter(it => passFilters(it));
+                if (!filtered.length) return;
+
+                const section = createSection(name, filtered);
+                const fixed   = CATEGORIES.find(c => c.name === name);
+                if (fixed) {
+                    (fixed.column === 'left' ? left : right).appendChild(section);
+                } else {
+                    (idx % 2 === 0 ? left : right).appendChild(section);
+                }
+            });
+
+            if (!left.childNodes.length && !right.childNodes.length) {
+                menuContent.innerHTML = `
+                    <div class="error">
+                        <h3>⚠ 找不到符合條件的菜單</h3>
+                        <div class="error-details">
+                            目前的搜尋關鍵字或「隱藏售罄」過濾條件已排除所有品項。
+                        </div>
+                    </div>`;
+                return;
+            }
+
+            menuContent.innerHTML = '';
+            menuContent.appendChild(left);
+            menuContent.appendChild(right);
+        }
+
+        function passFilters(it) {
+            if (hideSoldOut && String(it.soldout).toLowerCase() === 'true') return false;
+            if (!query) return true;
+            const fields = [it.zh, it.en, it.ja, it.ko, it.fr, it.th, it.fil, it.vi, it.contains]
+                .filter(Boolean).join(' ').toLowerCase();
+            return fields.includes(query);
+        }
+
+        function createSection(name, items) {
+            const sec    = document.createElement('section');
+            sec.className = 'menu-section';
+            sec.id        = `cat-${name}`;
+
+            // Section header (A TOAST style)
+            const zhLabel = CATEGORY_ZH[name] || '';
+            const header  = document.createElement('div');
+            header.className = 'section-header';
+            header.innerHTML = `
+                <span class="section-zh">${escapeHtml(zhLabel)}</span>
+                <span class="section-en">${escapeHtml(name)}</span>
+                <span class="section-price-col">價格</span>
+            `;
+            sec.appendChild(header);
+
+            items.forEach(item => {
+                const art = document.createElement('article');
+                art.className = 'menu-item';
+                if (String(item.soldout).toLowerCase() === 'true') art.classList.add('soldout');
+
+                const { text: primary   } = pickLang(item, currentLang);
+                const { text: secondary } = pickSecondary(item, currentLang);
+                const priceNum  = Number(item.price);
+                const priceText = (isFinite(priceNum) && priceNum > 0) ? String(priceNum) : (item.price || '—');
+
+                art.innerHTML = `
+                    <span class="item-circle" aria-hidden="true">○</span>
+                    <div class="item-body">
+                        <div class="item-primary">${escapeHtml(primary || '—')}</div>
+                        ${secondary ? `<div class="item-secondary">${escapeHtml(secondary)}</div>` : ''}
+                        ${renderBadges(item)}
+                    </div>
+                    <div class="item-price" aria-label="Price">${escapeHtml(priceText)}</div>
+                `;
+                sec.appendChild(art);
+            });
+
+            return sec;
+        }
+
+        // =============================================
+        // LANGUAGE & FORMATTING
+        // =============================================
+        function pickLang(item, lang) {
+            const val = (item[lang] || '').trim();
+            if (val) return { text: val };
+            if ((item.en || '').trim()) return { text: item.en.trim() };
+            if ((item.zh || '').trim()) return { text: item.zh.trim() };
+            const alt = ['ja','ko','fr','th','fil','vi'].map(k => item[k]).find(v => v && v.trim());
+            return { text: alt ? alt.trim() : '—' };
+        }
+
+        function pickSecondary(item, lang) {
+            if (lang === 'en') {
+                return { text: (item.zh || '').trim() };
+            }
+            const s = (item.en || '').trim() || (item.zh || '').trim();
+            return { text: s };
+        }
+
+        function renderBadges(item) {
+            const badges = [];
+            if (String(item.vegan).toLowerCase() === 'true')
+                badges.push(`<span class="badge vegan">Vegan</span>`);
+            const spicy = Number(item.spicy);
+            if (isFinite(spicy) && spicy > 0)
+                badges.push(`<span class="badge spicy">${'🌶'.repeat(Math.min(spicy, 3))}</span>`);
+            if (item.contains) {
+                const list = String(item.contains).split(/[,，;；]/).map(s => s.trim()).filter(Boolean);
+                if (list.length)
+                    badges.push(`<span class="badge allergen">${escapeHtml(list.join(' · '))}</span>`);
+            }
+            return badges.length ? `<div class="badges">${badges.join('')}</div>` : '';
+        }
+
+        function escapeHtml(s) {
+            return String(s ?? '').replace(/[&<>"']/g, c => (
+                { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]
+            ));
+        }
+
+        // =============================================
+        // START
+        // =============================================
+        init();
+    </script>
+</body>
+</html>
