@@ -1,0 +1,1268 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>每日收盤行情 · 當沖分析</title>
+<!-- 清除殘留的 Service Worker（避免舊 SW 攔截 fetch）-->
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(r => r.unregister());
+  });
+  // 清除所有 SW cache
+  if ('caches' in window) {
+    caches.keys().then(keys => keys.forEach(k => caches.delete(k)));
+  }
+}
+</script>
+<style>
+:root{
+  --up:#e03131; --dn:#2f9e44; --neu:#495057;
+  --b:#3b82f6; --b2:#dbeafe; --b3:#eff6ff;
+  --bg:#f4f5f7; --surface:#fff;
+  --border:#e8eaed; --border2:#d1d5db;
+  --ink:#1a1a2e; --ink2:#374151; --ink3:#6b7280; --ink4:#9ca3af;
+  --rad:10px; --sh:0 2px 8px rgba(0,0,0,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:system-ui,-apple-system,'Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);font-size:13px;min-height:100vh;}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 55%,#1d4ed8 100%);color:#fff;padding:32px 24px 28px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;right:-60px;top:-50px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,.3) 0%,transparent 70%);}
+.hero-inner{max-width:1280px;margin:0 auto;position:relative;z-index:1;}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:3px 12px;font-size:11px;color:#94a3b8;margin-bottom:12px;}
+.hero h1{font-size:1.6rem;font-weight:800;letter-spacing:-.5px;margin-bottom:4px;}
+.hero h1 em{color:#60a5fa;font-style:normal;}
+.hero-sub{font-size:12px;color:#64748b;}
+.hero-date{position:absolute;right:0;top:0;font-size:11px;color:#475569;background:rgba(0,0,0,.25);padding:5px 12px;border-radius:0 0 0 8px;}
+
+/* ── API 來源標示 ── */
+.api-sources{max-width:1280px;margin:0 auto;padding:6px 20px 8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+.api-chip{font-size:10px;font-family:monospace;color:var(--ink4);background:#fff;border:1px solid var(--border);border-radius:4px;padding:2px 7px;}
+
+/* ── CONTROLS ── */
+.ctrl-bar{max-width:1280px;margin:0 auto;padding:10px 20px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.search-wrap{position:relative;flex:1;min-width:180px;max-width:260px;}
+.search-wrap input{width:100%;padding:7px 10px 7px 30px;border:1px solid var(--border2);border-radius:7px;font-size:12px;background:#fff;outline:none;transition:border-color .15s,box-shadow .15s;}
+.search-wrap input:focus{border-color:var(--b);box-shadow:0 0 0 3px rgba(59,130,246,.12);}
+.search-ico{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--ink4);font-size:13px;pointer-events:none;}
+.btn-group{display:flex;border:1px solid var(--border2);border-radius:7px;overflow:hidden;background:#fff;}
+.btn-group button{padding:6px 13px;border:none;background:transparent;cursor:pointer;font-size:12px;font-weight:600;color:var(--ink3);transition:background .12s,color .12s;white-space:nowrap;}
+.btn-group button.active{background:var(--b);color:#fff;}
+.btn-group button:not(:last-child){border-right:1px solid var(--border2);}
+select.sort-sel{padding:6px 10px;border:1px solid var(--border2);border-radius:7px;font-size:12px;background:#fff;cursor:pointer;color:var(--ink2);outline:none;}
+.stat-pill{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--border);border-radius:7px;padding:5px 12px;font-size:11px;color:var(--ink3);white-space:nowrap;}
+.stat-pill strong{color:var(--ink2);}
+.dates-display{display:flex;gap:4px;align-items:center;flex-wrap:wrap;}
+.dates-label{font-size:10px;color:var(--ink4);white-space:nowrap;}
+.date-tag{background:#fff;border:1px solid var(--border);border-radius:5px;padding:3px 9px;font-size:10px;color:var(--ink3);font-family:monospace;cursor:pointer;transition:background .12s,border-color .12s,color .12s;}
+.date-tag:hover{background:#f3f4f6;border-color:var(--border2);color:var(--ink2);}
+.date-tag.today{background:var(--b3);border-color:var(--b2);color:var(--b);font-weight:700;}
+.date-tag.today:hover{background:#bfdbfe;}
+.date-tag.no-cache{opacity:.45;cursor:default;}     /* 未快取（僅顯示，不可點） */
+
+/* ── LOADING ── */
+#loadingState{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;gap:14px;}
+.spinner{width:36px;height:36px;border:3px solid var(--border2);border-top-color:var(--b);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.load-steps{display:flex;flex-direction:column;gap:5px;width:100%;max-width:480px;}
+.load-step{font-size:11px;color:var(--ink4);padding:3px 6px;border-radius:4px;transition:all .2s;}
+.load-step.done{color:#2f9e44;background:#f0fdf4;}
+.load-step.active{color:var(--b);background:var(--b3);font-weight:600;}
+.load-step.fail{color:var(--up);background:#fef2f2;}
+
+/* ── STOCK LIST ── */
+#stockList{max-width:1280px;margin:0 auto;padding:8px 20px 32px;display:flex;flex-direction:column;gap:10px;}
+
+/* ── STOCK ROW ── */
+.stock-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);overflow:hidden;box-shadow:var(--sh);}
+.stock-hd{display:flex;align-items:center;gap:10px;padding:9px 14px 8px;border-bottom:1px solid #f1f3f5;background:#fafbfc;}
+.stock-check{width:15px;height:15px;cursor:pointer;accent-color:var(--b);}
+.stock-code{font-family:ui-monospace,monospace;font-size:13px;font-weight:700;color:var(--ink2);}
+.stock-name{font-size:14px;font-weight:700;color:var(--ink);}
+.market-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:.3px;}
+.market-badge.twse{background:#dbeafe;color:#1d4ed8;}
+.market-badge.tpex{background:#fce7f3;color:#9d174d;}
+.stock-d0-info{margin-left:auto;font-size:12px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.clr-up{color:var(--up);}
+.clr-dn{color:var(--dn);}
+.clr-neu{color:var(--neu);}
+
+/* ── DAYS WRAP ── */
+.days-wrap{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#d1d5db transparent;}
+.days-wrap::-webkit-scrollbar{height:4px;}
+.days-wrap::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:2px;}
+
+/* ── DAY CARD ── */
+.day-card{flex:0 0 200px;min-width:180px;padding:11px 13px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:0;}
+.day-card:last-child{border-right:none;}
+.day-card.d0{border-top:3px solid var(--b);background:#fff;}
+.day-card:not(.d0){background:#fafbfc;}
+
+.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.day-label{font-size:11px;font-weight:700;font-family:ui-monospace,monospace;}
+.d0 .day-label{color:var(--b);}
+.day-card:not(.d0) .day-label{color:var(--ink4);}
+.card-date{font-size:11px;color:var(--ink4);}
+
+.card-price{font-size:22px;font-weight:800;line-height:1;margin-bottom:2px;}
+.card-price.up{color:var(--up);}
+.card-price.dn{color:var(--dn);}
+.card-price.neu{color:var(--neu);}
+.card-chg{font-size:13px;font-weight:600;margin-bottom:9px;}
+.card-chg.up{color:var(--up);}
+.card-chg.dn{color:var(--dn);}
+.card-chg.neu{color:var(--neu);}
+
+.card-metrics{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.met{display:flex;flex-direction:column;gap:1px;}
+.met-l{font-size:10px;color:var(--ink4);}
+.met-v{font-size:12px;font-weight:600;color:var(--ink2);font-variant-numeric:tabular-nums;}
+.met-v.dash{color:var(--ink4);font-weight:400;}
+
+/* Empty */
+.day-card.no-data{align-items:center;justify-content:center;background:#f9fafb;}
+.no-data-txt{font-size:12px;color:var(--ink4);text-align:center;padding:16px 0;}
+
+/* ── LOAD MORE ── */
+.load-more-wrap{text-align:center;padding:16px;}
+.btn-more{padding:9px 28px;border:1px solid var(--border2);border-radius:8px;background:#fff;color:var(--ink2);cursor:pointer;font-size:12px;font-weight:600;transition:background .12s;}
+.btn-more:hover{background:#f3f4f6;}
+
+/* ── DATE NAV BAR ── */
+.date-nav{max-width:1280px;margin:0 auto;padding:8px 20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.btn-nav{padding:6px 12px;border:1px solid var(--border2);border-radius:7px;background:#fff;color:var(--ink2);cursor:pointer;font-size:12px;font-weight:600;transition:background .12s;}
+.btn-nav:hover{background:#f3f4f6;}
+.btn-nav:disabled{opacity:.4;cursor:not-allowed;}
+.btn-today{background:var(--b3);border-color:var(--b2);color:var(--b);}
+.btn-today:hover{background:#dbeafe;}
+input[type=date].date-pick{padding:6px 10px;border:1px solid var(--border2);border-radius:7px;font-size:12px;background:#fff;color:var(--ink2);outline:none;cursor:pointer;}
+input[type=date].date-pick:focus{border-color:var(--b);box-shadow:0 0 0 3px rgba(59,130,246,.12);}
+.date-nav-label{font-size:11px;color:var(--ink4);}
+
+/* ── FOOTER ── */
+.footer{text-align:center;font-size:11px;color:var(--ink4);padding:20px;border-top:1px solid var(--border);}
+.footer a{color:var(--b);text-decoration:none;}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div id="heroDate" class="hero-date"></div>
+  <div class="hero-inner">
+    <div class="hero-tag">📊 收盤行情 × 當沖分析</div>
+    <h1>每日收盤<em>行情報表</em></h1>
+    <div class="hero-sub">串接 TWSE / TPEX，自動顯示近 4 日收盤、深量、出量、當沖比</div>
+  </div>
+</div>
+
+<!-- API 來源 -->
+<!-- <div class="api-sources">
+  <span style="font-size:10px;color:var(--ink4);">資料來源：</span>
+  <span class="api-chip">MI_INDEX（上市收盤）</span>
+  <span class="api-chip">TWTB4U（上市當沖）</span>
+  <span class="api-chip">afterTrading/otc（上櫃收盤）</span>
+  <span class="api-chip">intraday/stat（上櫃當沖）</span>
+</div>
+-->
+<!-- 日期導航列（常態顯示） -->
+<div class="date-nav">
+  <span class="date-nav-label">查詢基準日：</span>
+  <button class="btn-nav" id="btnPrev" title="前一個交易日">&#8592; 前一日</button>
+  <!--<input type="date" class="date-pick" id="anchorDateInput"> -->
+  <button class="btn-nav btn-today" id="btnToday">今天</button>
+  <button class="btn-nav" id="btnNext" title="後一個交易日">後一日 &#8594;</button>
+  <span class="date-nav-label" id="dateNavNote" style="color:var(--ink4);font-size:10px;"></span>
+</div>
+
+<!-- 控制列 -->
+<div class="ctrl-bar" id="ctrlBar" style="display:none;">
+  <div class="search-wrap">
+    <span class="search-ico">🔍</span>
+    <input type="text" id="searchInput" placeholder="代號或名稱...">
+  </div>
+  <div class="btn-group" id="mktGroup">
+    <button class="active" data-mkt="all">全部</button>
+    <button data-mkt="twse">上市</button>
+    <button data-mkt="tpex">上櫃</button>
+  </div>
+  <select class="sort-sel" id="sortSel">
+    <option value="dtBuyZh">深量（買進）</option>
+    <option value="dtSellZh">出量（賣出）</option>
+    <option value="tradingPct">當沖比</option>
+    <option value="changePct">漲幅</option>
+    <option value="volume">成交量</option>
+  </select>
+  <div class="stat-pill">顯示 <strong id="showCount">—</strong> / <strong id="totalCount">—</strong> 檔</div>
+  <div class="dates-display" id="datesDisplay">
+    <span class="dates-label">快取日期：</span>
+  </div>
+</div>
+
+<!-- Debug panel -->
+<div id="debugPanel" style="display:none;max-width:1280px;margin:8px auto;padding:0 20px;">
+  <details open>
+    <summary style="cursor:pointer;font-size:11px;font-weight:700;color:#6b7280;padding:6px 0;">🔍 除錯資訊（Debug）</summary>
+    <pre id="debugLog" style="background:#1e293b;color:#94a3b8;font-size:11px;padding:12px;border-radius:8px;max-height:320px;overflow:auto;margin-top:6px;white-space:pre-wrap;word-break:break-all;"></pre>
+  </details>
+</div>
+
+<!-- 載入中 -->
+<div id="loadingState">
+  <div class="spinner"></div>
+  <div class="load-steps">
+    <div class="load-step" id="s1">⏳ 計算近期交易日期…</div>
+    <div class="load-step" id="s2">⏳ 載入上市收盤（MI_INDEX × 4天）…</div>
+    <div class="load-step" id="s3">⏳ 載入上市當沖（TWTB4U × 4天）…</div>
+    <div class="load-step" id="s4">⏳ 載入上櫃收盤（OTC × 4天）…</div>
+    <div class="load-step" id="s5">⏳ 載入上櫃當沖（intraday/stat × 4天）…</div>
+    <div class="load-step" id="s6">⏳ 整合資料並渲染…</div>
+  </div>
+</div>
+
+<!-- 股票列表 -->
+<div id="stockList" style="display:none;"></div>
+<div id="loadMoreWrap" class="load-more-wrap" style="display:none;">
+  <button class="btn-more" id="loadMoreBtn">載入更多</button>
+</div>
+
+<div class="footer">
+  每日行情 × 當沖分析 ·
+  <a href="https://www.twse.com.tw" target="_blank">TWSE</a> ·
+  <a href="https://www.tpex.org.tw" target="_blank">TPEX</a> ·
+  僅供參考，不構成投資建議
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   CONFIG
+   本機 (localhost/127.0.0.1) → 用 server.js 的 /proxy
+   其他環境 → 用 Cloudflare Worker
+══════════════════════════════════════════ */
+const IS_LOCAL = ['localhost','127.0.0.1','::1'].includes(location.hostname);
+const WORKER   = IS_LOCAL
+  ? `${location.protocol}//${location.host}/proxy`
+  : 'https://black-bonus-4618.s01yg3642.workers.dev/';
+const TWSE_DAILY = 'https://www.twse.com.tw/rwd/zh/afterTrading/MI_INDEX';
+const TPEX_DAILY = 'https://www.tpex.org.tw/www/zh-tw/afterTrading/otc';
+const TWSE_DT    = 'https://www.twse.com.tw/exchangeReport/TWTB4U';
+const TPEX_DT    = 'https://www.tpex.org.tw/www/zh-tw/intraday/stat';
+
+const PAGE_SIZE   = 60;
+const DAYS_BEFORE = 2;   // 基準日前
+const DAYS_AFTER  = 2;   // 基準日後
+const DAYS_COUNT  = DAYS_BEFORE + 1 + DAYS_AFTER; // 5
+const ANCHOR_IDX  = DAYS_BEFORE; // 2（第三欄）
+
+/* ══════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════ */
+const $   = id => document.getElementById(id);
+const num = s  => parseFloat(String(s || '').replace(/,/g, '')) || 0;
+const esc = s  => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function proxyUrl(url) {
+  return WORKER + '?url=' + encodeURIComponent(url);
+}
+
+async function pfetch(url) {
+  const res = await fetch(proxyUrl(url));
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+
+async function pfetchText(url) {
+  const res = await fetch(proxyUrl(url));
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.text();
+}
+
+/* Step indicators */
+function stepSet(n, cls, msg) {
+  const el = $('s' + n);
+  if (!el) return;
+  el.className = 'load-step ' + cls;
+  el.textContent = msg;
+}
+const stepActive = (n, m) => stepSet(n, 'active', '⏳ ' + m);
+const stepDone   = (n, m) => stepSet(n, 'done',   '✓ ' + m);
+const stepFail   = (n, m) => stepSet(n, 'fail',   '✗ ' + m);
+
+/* Debug log */
+const debugLines = [];
+function dbg(...args) {
+  const msg = args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 1) : String(a)).join(' ');
+  debugLines.push(msg);
+  const el = $('debugLog');
+  if (el) el.textContent = debugLines.join('\n');
+  console.log('[DBG]', ...args);
+}
+function showDebug() {
+  const panel = $('debugPanel');
+  if (panel) panel.style.display = '';
+}
+
+/* Hero date */
+(function(){
+  const d = new Date(), roc = d.getFullYear() - 1911;
+  const mm = String(d.getMonth()+1).padStart(2,'0'), dd = String(d.getDate()).padStart(2,'0');
+  $('heroDate').textContent = `民國 ${roc}年${mm}月${dd}日`;
+})();
+
+/* ══════════════════════════════════════════
+   DATE UTILITIES
+══════════════════════════════════════════ */
+// anchorDate: 查詢基準日（D[0]），預設今天
+let anchorDate = new Date();
+
+function dateToInput(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function inputToDate(s) {
+  const [y,m,d] = s.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+
+// 找到從 anchor 往前（含 anchor）的最近一個交易日
+function nearestTradingDay(d) {
+  const t = new Date(d);
+  while (t.getDay() === 0 || t.getDay() === 6) t.setDate(t.getDate() - 1);
+  return t;
+}
+// 前一個交易日
+function prevTradingDay(d) {
+  const t = new Date(d); t.setDate(t.getDate() - 1);
+  return nearestTradingDay(t);
+}
+// 後一個交易日（不超過今天）
+function nextTradingDay(d) {
+  const today = new Date(); today.setHours(23,59,59,999);
+  const t = new Date(d); t.setDate(t.getDate() + 1);
+  while (t.getDay() === 0 || t.getDay() === 6) t.setDate(t.getDate() + 1);
+  return t > today ? d : t;
+}
+
+// 以 anchor 為中心，往前 before 個交易日、往後 after 個交易日
+// 回傳 [oldest … anchor … newest]，共 before+1+after 天
+function getTradingDaysAroundAnchor(anchor, before, after) {
+  // 往前 before 天
+  const prev = [];
+  const dp = new Date(anchor); dp.setDate(dp.getDate() - 1);
+  while (prev.length < before) {
+    if (dp.getDay() !== 0 && dp.getDay() !== 6) prev.push(new Date(dp));
+    dp.setDate(dp.getDate() - 1);
+  }
+  prev.reverse(); // 舊→新
+
+  // 往後 after 天
+  const next = [];
+  const dn = new Date(anchor); dn.setDate(dn.getDate() + 1);
+  while (next.length < after) {
+    if (dn.getDay() !== 0 && dn.getDay() !== 6) next.push(new Date(dn));
+    dn.setDate(dn.getDate() + 1);
+  }
+
+  return [...prev, new Date(anchor), ...next];
+  // index: 0=anchor-2, 1=anchor-1, 2=anchor(基準), 3=anchor+1, 4=anchor+2
+}
+
+// 初始化日期選擇器
+(function initDateNav() {
+  anchorDate = nearestTradingDay(new Date());
+  const inp = $('anchorDateInput');
+  if (inp) {
+    inp.value = dateToInput(anchorDate);
+    inp.max   = dateToInput(new Date());
+    inp.addEventListener('change', () => {
+      anchorDate = nearestTradingDay(inputToDate(inp.value));
+      inp.value  = dateToInput(anchorDate); // snap to trading day
+      reload();
+    });
+  }
+  $('btnPrev')?.addEventListener('click', () => {
+    anchorDate = prevTradingDay(anchorDate);
+    if (inp) inp.value = dateToInput(anchorDate);
+    reload();
+  });
+  $('btnNext')?.addEventListener('click', () => {
+    const next = nextTradingDay(anchorDate);
+    if (next === anchorDate) { $('dateNavNote').textContent = '已是最新日'; return; }
+    anchorDate = next;
+    $('dateNavNote').textContent = '';
+    if (inp) inp.value = dateToInput(anchorDate);
+    reload();
+  });
+  $('btnToday')?.addEventListener('click', () => {
+    anchorDate = nearestTradingDay(new Date());
+    if (inp) inp.value = dateToInput(anchorDate);
+    $('dateNavNote').textContent = '';
+    reload();
+  });
+})();
+
+/* TWSE date: YYYYMMDD */
+const twseDate = d =>
+  `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+
+/* TPEX date: YYYY/MM/DD (western, NOT ROC — confirmed from Python source) */
+const tpexDate = d =>
+  `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;
+
+/* Display date: MM/DD */
+const dispDate = d =>
+  `${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;
+
+/* ══════════════════════════════════════════
+   CONFIG  (從 config/daily-report.json 載入)
+══════════════════════════════════════════ */
+let CFG = null;
+
+/* 內建備用設定（與 config/daily-report.json 保持同步） */
+const FALLBACK_CFG = {
+  apis: {
+    twseDaily: {
+      tableSelect: { titleContains: '收盤行情', fallbackLast: true },
+      codePattern: '^\\d{4}$',
+      market: 'TWSE',
+      signedChange: true,
+      fields: {
+        code:   { match: '代號',          pos: 0    },
+        name:   { match: '名稱',          pos: 1    },
+        open:   { match: '開盤',          pos: null },
+        high:   { match: '最高',          pos: null },
+        low:    { match: '最低',          pos: null },
+        close:  { match: '收盤',          pos: null },
+        dir:    { match: '漲跌.*[+\\-/]', pos: null },
+        chg:    { match: '漲跌價差',      pos: null },
+        volume: { match: '成交股數',      pos: null },
+        trades: { match: '成交筆數',      pos: null },
+        amount: { match: '成交金額',      pos: null },
+      },
+    },
+    twseDT: {
+      tableSelect: { index: 1, fallbackFirst: true },
+      requireStat: 'OK',
+      codePattern: '^\\d{4}$',
+      fields: {
+        code:    { match: '代號',          pos: 0 },
+        name:    { match: '名稱',          pos: 1 },
+        dtVol:   { match: '沖銷.*成交股數', pos: 3 },
+        buyAmt:  { match: '買進成交金額',  pos: 4 },
+        sellAmt: { match: '賣出成交金額',  pos: 5 },
+      },
+    },
+    tpexDaily: {
+      tableSelect: { index: 0 },
+      codePattern: '^\\d{4,5}$',
+      market: 'TPEX',
+      signedChange: false,
+      fields: {
+        code:   { match: '代號',   pos: 0    },
+        name:   { match: '名稱',   pos: 1    },
+        close:  { match: '收盤',   pos: null },
+        change: { match: '^漲跌$', pos: null },
+        open:   { match: '開盤',   pos: null },
+        high:   { match: '最高',   pos: null },
+        low:    { match: '最低',   pos: null },
+        volume: { match: '成交股數', pos: null },
+        trades: { match: '成交筆數', pos: null },
+      },
+    },
+    tpexDT: {
+      tableSelect: { index: 0 },
+      codePattern: '^\\d{4,5}$',
+      fields: {
+        code:    { match: '代號',              pos: 0 },
+        dtVol:   { match: '沖銷.*股數|成交股數', pos: 2 },
+        buyAmt:  { match: '買進.*金額',         pos: 3 },
+        sellAmt: { match: '賣出.*金額',         pos: 4 },
+      },
+    },
+  },
+  display: {
+    dayLabels: ['D-2', 'D-1', '基準', 'D+1', 'D+2'],
+    metrics: [
+      { key: 'dtBuyZh',    label: '深量',  format: 'integer',
+        formula: { op: 'divchain', args: ['dtBuyAmt', 'close', 1000], guard: ['dtBuyAmt', 'close'] } },
+      { key: 'dtSellZh',   label: '出量',  format: 'integer',
+        formula: { op: 'divchain', args: ['dtSellAmt', 'close', 1000], guard: ['dtBuyAmt', 'close'] } },
+      { key: 'tradingPct', label: '交易%', format: 'percent1',
+        formula: { op: 'pct', args: ['dtVolume', 'volume'], guard: ['dtVolume', 'volume'],
+          fallback: { op: 'pct_scaled', args: [{ sum: ['dtBuyZh', 'dtSellZh'] }, { div: ['volume', 1000] }],
+            scale: 50, guard: ['dtBuyZh', 'volume'] } } },
+      { key: null,         label: '52H%', format: 'dash' },
+    ],
+    sortOptions: [
+      { value: 'dtBuyZh',    label: '深量（買進）' },
+      { value: 'dtSellZh',   label: '出量（賣出）' },
+      { value: 'tradingPct', label: '當沖比' },
+      { value: 'changePct',  label: '漲幅' },
+      { value: 'volume',     label: '成交量' },
+    ],
+  },
+};
+
+async function loadConfig() {
+  try {
+    const r = await fetch('./config/daily-report.json');
+    CFG = await r.json();
+    dbg('✓ config/daily-report.json 載入成功');
+  } catch(e) {
+    dbg('⚠ 設定檔載入失敗，使用內建預設值:', e.message);
+    CFG = FALLBACK_CFG;
+  }
+  applyConfigToUI();
+}
+
+// 將 config 套用至排序選單與 DAY_LABELS
+function applyConfigToUI() {
+  const sel = $('sortSel');
+  if (sel && CFG.display?.sortOptions) {
+    sel.innerHTML = CFG.display.sortOptions
+      .map(o => `<option value="${o.value}">${o.label}</option>`).join('');
+  }
+  if (CFG.display?.dayLabels) {
+    DAY_LABELS.splice(0, DAY_LABELS.length, ...CFG.display.dayLabels);
+  }
+}
+
+/* ── 通用欄位索引建立器 ─────────────────────
+   根據 config.fields 的 match（regex）與 pos（fallback）
+   自動對應 API 回傳的 header 欄位名稱
+──────────────────────────────────────────── */
+function buildFieldIndex(headerFields, cfgFields) {
+  const fi = {};
+  headerFields.forEach((f, i) => {
+    const fn = String(f).trim().replace(/\s+/g, '');
+    for (const [key, cfg] of Object.entries(cfgFields)) {
+      if (fi[key] == null && new RegExp(cfg.match).test(fn)) fi[key] = i;
+    }
+  });
+  // 套用 positional fallback
+  for (const [key, cfg] of Object.entries(cfgFields)) {
+    if (fi[key] == null && cfg.pos != null) fi[key] = cfg.pos;
+  }
+  return fi;
+}
+
+/* ── 選取 table（依 config tableSelect 規則）── */
+function selectTable(json, tableSelect) {
+  if (!Array.isArray(json.tables) || json.tables.length === 0) return null;
+  if (tableSelect.titleContains) {
+    const found = json.tables.find(t => t.title && t.title.includes(tableSelect.titleContains));
+    if (found) return found;
+    if (tableSelect.fallbackLast) return json.tables[json.tables.length - 1];
+    return null;
+  }
+  if (tableSelect.index != null) {
+    const idx = tableSelect.index;
+    if (json.tables.length > idx) return json.tables[idx];
+    if (tableSelect.fallbackFirst) return json.tables[0];
+    return null;
+  }
+  return json.tables[0];
+}
+
+/* ══════════════════════════════════════════
+   PARSER: MI_INDEX (TWSE daily)
+   欄位對照由 config/daily-report.json → apis.twseDaily.fields 管理
+══════════════════════════════════════════ */
+function parseMIIndex(json) {
+  if (!json || !Array.isArray(json.tables)) return {};
+  const apiCfg = CFG?.apis?.twseDaily;
+  const table  = selectTable(json, apiCfg?.tableSelect ?? { titleContains: '收盤行情', fallbackLast: true });
+  if (!table || !Array.isArray(table.fields) || !Array.isArray(table.data)) return {};
+
+  const fi        = buildFieldIndex(table.fields, apiCfg?.fields ?? {});
+  const codeRe    = new RegExp(apiCfg?.codePattern ?? '^\\d{4}$');
+  const result    = {};
+
+  for (const row of table.data) {
+    const code = String(row[fi.code ?? 0] || '').trim();
+    if (!code || !codeRe.test(code)) continue;
+
+    const close  = num(row[fi.close]);
+    const chgAbs = num(row[fi.chg]);
+    const dirRaw = String(row[fi.dir] ?? '').trim();
+    const sign   = (dirRaw === '-' || dirRaw === '－') ? -1 : 1;
+    const change = chgAbs * sign;
+    const prev   = close - change;
+
+    result[code] = {
+      name: String(row[fi.name ?? 1] || '').trim(),
+      open: num(row[fi.open]), high: num(row[fi.high]), low: num(row[fi.low]),
+      close, change, changePct: prev > 0 ? (change / prev) * 100 : 0,
+      volume: num(row[fi.volume]), trades: num(row[fi.trades]),
+      market: apiCfg?.market ?? 'TWSE',
+    };
+  }
+  return result;
+}
+
+/* ══════════════════════════════════════════
+   PARSER: TWTB4U (TWSE day trading)
+   欄位對照由 config/daily-report.json → apis.twseDT.fields 管理
+══════════════════════════════════════════ */
+function parseTWTB4U(json) {
+  const apiCfg = CFG?.apis?.twseDT;
+  if (apiCfg?.requireStat && json?.stat !== apiCfg.requireStat) return {};
+  if (!json || !Array.isArray(json.tables)) return {};
+
+  const table  = selectTable(json, apiCfg?.tableSelect ?? { index: 1, fallbackFirst: true });
+  if (!table || !Array.isArray(table.fields) || !Array.isArray(table.data)) return {};
+
+  const fi     = buildFieldIndex(table.fields, apiCfg?.fields ?? {});
+  const codeRe = new RegExp(apiCfg?.codePattern ?? '^\\d{4}$');
+  const result = {};
+
+  for (const row of table.data) {
+    const code = String(row[fi.code ?? 0] || '').trim();
+    if (!code || !codeRe.test(code)) continue;
+    result[code] = {
+      dtVolume:  num(row[fi.dtVol]),
+      dtBuyAmt:  num(row[fi.buyAmt]),
+      dtSellAmt: num(row[fi.sellAmt]),
+    };
+  }
+  return result;
+}
+
+/* ══════════════════════════════════════════
+   PARSER: TPEX OTC (上櫃收盤)
+   欄位對照由 config/daily-report.json → apis.tpexDaily.fields 管理
+══════════════════════════════════════════ */
+function parseTPEX(json) {
+  if (!json || !Array.isArray(json.tables)) return {};
+  const apiCfg = CFG?.apis?.tpexDaily;
+  const table  = selectTable(json, apiCfg?.tableSelect ?? { index: 0 });
+  if (!table || !Array.isArray(table.fields) || !Array.isArray(table.data)) return {};
+
+  const fi     = buildFieldIndex(table.fields, apiCfg?.fields ?? {});
+  const codeRe = new RegExp(apiCfg?.codePattern ?? '^\\d{4,5}$');
+  const result = {};
+
+  for (const row of table.data) {
+    const code = String(row[fi.code ?? 0] || '').trim();
+    if (!code || !codeRe.test(code)) continue;
+
+    const close  = num(row[fi.close]);
+    const change = num(row[fi.change]); // TPEX 已帶正負號
+    const prev   = close - change;
+
+    const changePct = (close > 0 && prev > 0) ? (change / prev) * 100 : 0;
+    result[code] = {
+      name: String(row[fi.name ?? 1] || '').trim(),
+      open: num(row[fi.open]), high: num(row[fi.high]), low: num(row[fi.low]),
+      close,
+      change,
+      changePct,
+      volume:    num(row[fi.volume]),
+      trades:    num(row[fi.trades]),
+      market:    'TPEX',
+    };
+  }
+  return result;
+}
+
+/* ══════════════════════════════════════════
+   PARSER: TPEX intraday/stat (上櫃當沖) — JSON fallback
+   Python confirms this endpoint uses HTML; JSON may still work on some days
+══════════════════════════════════════════ */
+function parseTPEXDT(json) {
+  if (!json) return {};
+  const apiCfg = CFG?.apis?.tpexDT;
+  const cfgFields = apiCfg?.fields ?? {};
+  const codeRe = new RegExp(apiCfg?.codePattern ?? '^\\d{4,5}$');
+
+  // Try tables[] shape
+  if (Array.isArray(json.tables) && json.tables[0]) {
+    const table  = json.tables[0];
+    const fi     = buildFieldIndex(table.fields || [], cfgFields);
+    const result = {};
+    for (const row of (table.data || [])) {
+      if (!Array.isArray(row)) continue;
+      const code = String(row[fi.code ?? 0] || '').trim();
+      if (!code || !codeRe.test(code)) continue;
+      result[code] = {
+        dtVolume:  num(row[fi.dtVol  ?? 2]),
+        dtBuyAmt:  num(row[fi.buyAmt ?? 3]),
+        dtSellAmt: num(row[fi.sellAmt ?? 4]),
+      };
+    }
+    if (Object.keys(result).length > 0) return result;
+  }
+
+  // aaData shape (fallback)
+  const rows = json.aaData || json.data || [];
+  if (Array.isArray(rows) && rows.length > 0) {
+    const result = {};
+    for (const row of rows) {
+      if (!Array.isArray(row)) continue;
+      const code = String(row[0] || '').trim();
+      if (!code || !codeRe.test(code)) continue;
+      result[code] = {
+        dtVolume:  num(row[2]),
+        dtBuyAmt:  num(row[3]),
+        dtSellAmt: num(row[4]),
+      };
+    }
+    return result;
+  }
+
+  return {};
+}
+
+/* ══════════════════════════════════════════
+   PARSER: TPEX intraday/stat — HTML table fallback
+   Python uses pd.read_html() on the HTML response
+══════════════════════════════════════════ */
+function parseTPEXDTHtml(html) {
+  const doc     = new DOMParser().parseFromString(html, 'text/html');
+  const apiCfg  = CFG?.apis?.tpexDT;
+  const cfgFlds = apiCfg?.fields ?? {};
+  const codeRe  = new RegExp(apiCfg?.codePattern ?? '^\\d{4,5}$');
+  const result  = {};
+
+  for (const tbl of doc.querySelectorAll('table')) {
+    // Find header row and build field index using same regex logic as buildFieldIndex
+    let headerCells = null;
+    for (const row of tbl.querySelectorAll('tr')) {
+      const cells = Array.from(row.querySelectorAll('th,td')).map(c => c.textContent.trim());
+      if (cells.some(t => /代號/.test(t))) { headerCells = cells; break; }
+    }
+    if (!headerCells) continue;
+
+    const fi = buildFieldIndex(headerCells, cfgFlds);
+
+    for (const row of tbl.querySelectorAll('tr')) {
+      const cells = Array.from(row.querySelectorAll('td')).map(c => c.textContent.trim());
+      const code  = cells[fi.code ?? 0] || '';
+      if (!code || !codeRe.test(code)) continue;
+      result[code] = {
+        dtVolume:  num(cells[fi.dtVol  ?? 2]),
+        dtBuyAmt:  num(cells[fi.buyAmt ?? 3]),
+        dtSellAmt: num(cells[fi.sellAmt ?? 4]),
+      };
+    }
+    if (Object.keys(result).length > 0) break;
+  }
+  return result;
+}
+
+/* ══════════════════════════════════════════
+   COMPUTED FIELDS
+   公式定義由 config/daily-report.json → display.metrics[].formula 管理
+   支援 op: divchain | pct | pct_scaled
+   args 可為：數字字面量、欄位名稱字串、{ sum:[...] }、{ div:[a,b] }
+══════════════════════════════════════════ */
+function _evalArg(s, arg) {
+  if (typeof arg === 'number') return arg;
+  if (typeof arg === 'string') return s[arg] ?? 0;
+  if (arg && typeof arg === 'object') {
+    if (arg.sum) return arg.sum.reduce((acc, k) => acc + (s[k] ?? 0), 0);
+    if (arg.div) return _evalArg(s, arg.div[0]) / _evalArg(s, arg.div[1]);
+  }
+  return 0;
+}
+
+function _guardOk(s, guard) {
+  return !guard || guard.every(k => (s[k] ?? 0) > 0);
+}
+
+function _evalFormula(s, f) {
+  if (!f) return undefined;
+  if (!_guardOk(s, f.guard)) {
+    return f.fallback ? _evalFormula(s, f.fallback) : undefined;
+  }
+  const args = (f.args || []).map(a => _evalArg(s, a));
+  switch (f.op) {
+    case 'divchain':   return args.reduce((acc, v) => acc / v);
+    case 'pct':        return (args[0] / args[1]) * 100;
+    case 'pct_scaled': return (args[0] / args[1]) * (f.scale ?? 100);
+    default:           return undefined;
+  }
+}
+
+function computeFields(s) {
+  const metrics = (CFG ?? FALLBACK_CFG).display.metrics;
+  for (const m of metrics) {
+    if (!m.key || !m.formula) continue;
+    const val = _evalFormula(s, m.formula);
+    if (val !== undefined) s[m.key] = val;
+  }
+}
+
+/* ══════════════════════════════════════════
+   CACHE  (localStorage，保留 7 個交易日)
+   key: dr_YYYYMMDD
+   val: { ts: timestamp(ms), data: dayMap }
+══════════════════════════════════════════ */
+const CACHE_PFX = 'dr_';
+const CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // 7 天
+
+function cacheGet(dateKey) {
+  try {
+    const raw = localStorage.getItem(CACHE_PFX + dateKey);
+    if (!raw) return null;
+    const { ts, data } = JSON.parse(raw);
+    if (Date.now() - ts > CACHE_TTL) {
+      localStorage.removeItem(CACHE_PFX + dateKey);
+      return null;
+    }
+    return data;
+  } catch(e) { return null; }
+}
+
+function cacheSet(dateKey, data) {
+  try {
+    localStorage.setItem(CACHE_PFX + dateKey,
+      JSON.stringify({ ts: Date.now(), data }));
+  } catch(e) {
+    // localStorage 滿了 → 刪最舊的再試
+    cachePurge(true);
+    try { localStorage.setItem(CACHE_PFX + dateKey, JSON.stringify({ ts: Date.now(), data })); } catch(e2) {}
+  }
+}
+
+function cachePurge(force = false) {
+  const now = Date.now();
+  const ttl = force ? CACHE_TTL / 2 : CACHE_TTL; // force 時縮短 TTL 以釋放空間
+  for (let i = localStorage.length - 1; i >= 0; i--) {
+    const k = localStorage.key(i);
+    if (!k || !k.startsWith(CACHE_PFX)) continue;
+    try {
+      const { ts } = JSON.parse(localStorage.getItem(k));
+      if (now - ts > ttl) localStorage.removeItem(k);
+    } catch(e) { localStorage.removeItem(k); }
+  }
+}
+
+function cacheStats() {
+  let count = 0, bytes = 0;
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (!k || !k.startsWith(CACHE_PFX)) continue;
+    count++;
+    bytes += (localStorage.getItem(k) || '').length;
+  }
+  return { count, kb: Math.round(bytes / 1024) };
+}
+
+// 取出所有已快取的日期（YYYYMMDD），排序由新到舊
+function getCachedDateKeys() {
+  const keys = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (!k || !k.startsWith(CACHE_PFX)) continue;
+    keys.push(k.slice(CACHE_PFX.length)); // 'dr_20260327' → '20260327'
+  }
+  return keys.sort((a, b) => b.localeCompare(a)); // 新 → 舊
+}
+
+// 把 YYYYMMDD → MM/DD 顯示
+function fmtKey(k) {
+  return k.slice(4,6) + '/' + k.slice(6,8); // '20260327' → '03/27'
+}
+
+// 將 metric 值依 format 格式化，回傳 { text, isDash }
+function fmtMetric(val, format) {
+  if (val == null || val === 0 || format === 'dash') return { text: '—', isDash: true };
+  switch (format) {
+    case 'integer':  return { text: Math.round(val).toLocaleString(), isDash: false };
+    case 'percent1': return { text: val.toFixed(1) + '%',             isDash: false };
+    default:         return { text: String(val),                       isDash: false };
+  }
+}
+
+// 渲染快取日期列（可點選切換基準日）
+function renderCacheDates() {
+  const el = $('datesDisplay');
+  if (!el) return;
+  const anchorKey = twseDate(anchorDate); // 目前基準日
+  const keys = getCachedDateKeys();
+
+  el.innerHTML = `<span class="dates-label">快取日期：</span>`;
+  if (keys.length === 0) {
+    el.innerHTML += `<span style="font-size:10px;color:var(--ink4);">（尚無快取）</span>`;
+    return;
+  }
+
+  keys.forEach(k => {
+    const isAnchor = k === anchorKey;
+    const tag = document.createElement('span');
+    tag.className = 'date-tag' + (isAnchor ? ' today' : '');
+    tag.textContent = fmtKey(k);
+    tag.title = k.slice(0,4) + '/' + k.slice(4,6) + '/' + k.slice(6,8)
+      + (isAnchor ? '（目前基準日）' : '　點擊設為基準日');
+
+    if (!isAnchor) {
+      tag.addEventListener('click', () => {
+        // YYYYMMDD → Date
+        const y = +k.slice(0,4), m = +k.slice(4,6)-1, d = +k.slice(6,8);
+        anchorDate = new Date(y, m, d);
+        const inp = $('anchorDateInput');
+        if (inp) inp.value = dateToInput(anchorDate);
+        $('dateNavNote').textContent = '';
+        reload();
+      });
+    }
+    el.appendChild(tag);
+  });
+}
+
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+let allStocks   = [];
+let filtered    = [];
+let page        = 0;
+let tradingDays = [];
+
+function reload() {
+  // 重置 UI
+  allStocks = []; filtered = []; page = 0; tradingDays = [];
+  $('stockList').innerHTML = '';
+  $('stockList').style.display    = 'none';
+  $('loadMoreWrap').style.display = 'none';
+  $('ctrlBar').style.display      = 'none';
+  $('loadingState').style.display = '';
+  // 重置步驟狀態
+  for (let i = 1; i <= 6; i++) stepSet(i, '', ['⏳ 計算交易日期…','⏳ 載入行情資料（5 日）…','—','—','—','⏳ 整合資料並渲染…'][i-1]);
+  debugLines.length = 0;
+  if ($('debugLog')) $('debugLog').textContent = '';
+  main();
+}
+
+/* ══════════════════════════════════════════
+   FETCH ONE DAY（含快取）
+   回傳 dayMap: { code → stockObj }
+══════════════════════════════════════════ */
+async function fetchDayMap(d, onProgress) {
+  const dk = twseDate(d);          // YYYYMMDD
+  const td = tpexDate(d);          // YYYY/MM/DD
+
+  // ── 快取命中 ──────────────────────────────
+  const cached = cacheGet(dk);
+  if (cached) { onProgress?.(`⚡ ${dispDate(d)} 快取`); return cached; }
+
+  // ── 同時發出 4 支 API ────────────────────
+  onProgress?.(`⏳ ${dispDate(d)} 抓取…`);
+
+  const [twseDaily, twseDT, tpexDaily, tpexDT] = await Promise.all([
+
+    /* TWSE 收盤 */
+    pfetch(`${TWSE_DAILY}?date=${dk}&type=ALLBUT0999&response=json`)
+      .then(j => {
+        const r = parseMIIndex(j);
+        dbg(`MI_INDEX ${dk}: ${Object.keys(r).length}筆`);
+        return r;
+      }).catch(e => { dbg(`MI_INDEX ${dk} ERR: ${e.message}`); return {}; }),
+
+    /* TWSE 當沖 */
+    pfetch(`${TWSE_DT}?response=json&date=${dk}`)
+      .then(j => {
+        const r = parseTWTB4U(j);
+        dbg(`TWTB4U ${dk}: ${Object.keys(r).length}筆`);
+        return r;
+      }).catch(e => { dbg(`TWTB4U ${dk} ERR: ${e.message}`); return {}; }),
+
+    /* TPEX 收盤 */
+    pfetchText(`${TPEX_DAILY}?date=${td}&type=AL&response=json`)
+      .then(raw => {
+        dbg(`TPEX OTC ${td} raw(前150): ${raw.slice(0,150)}`);
+        let j; try { j = JSON.parse(raw); } catch(e) { dbg(`  → 非JSON`); return {}; }
+        const r = parseTPEX(j);
+        dbg(`TPEX OTC ${td}: ${Object.keys(r).length}筆`);
+        return r;
+      }).catch(e => { dbg(`TPEX OTC ${td} ERR: ${e.message}`); return {}; }),
+
+    /* TPEX 當沖（JSON → HTML fallback） */
+    (async () => {
+      try {
+        const j = await pfetch(`${TPEX_DT}?type=Daily&date=${td}&id=&response=json`);
+        const r = parseTPEXDT(j);
+        if (Object.keys(r).length > 0) { dbg(`TPEX DT ${td} JSON: ${Object.keys(r).length}筆`); return r; }
+      } catch(e) {}
+      try {
+        const html = await pfetchText(`${TPEX_DT}?type=Daily&date=${td}&id=&response=html`);
+        const r = parseTPEXDTHtml(html);
+        dbg(`TPEX DT ${td} HTML: ${Object.keys(r).length}筆`);
+        return r;
+      } catch(e) { dbg(`TPEX DT ${td} ERR: ${e.message}`); }
+      return {};
+    })(),
+  ]);
+
+  // ── 合併 ────────────────────────────────
+  const m = {};
+  for (const [c, s] of Object.entries(twseDaily)) m[c] = { ...s };
+  for (const [c, dt] of Object.entries(twseDT))   { if (!m[c]) m[c] = { market:'TWSE' }; Object.assign(m[c], dt); }
+  for (const [c, s] of Object.entries(tpexDaily))  { if (!m[c]) m[c] = {}; m[c] = { ...m[c], ...s }; }
+  for (const [c, dt] of Object.entries(tpexDT))    { if (!m[c]) m[c] = { market:'TPEX' }; Object.assign(m[c], dt); }
+  for (const s of Object.values(m)) computeFields(s);
+
+  // ── 寫入快取（只存當日或過去日期，未來日期不快取） ──
+  const today = new Date(); today.setHours(23,59,59,999);
+  if (d <= today) cacheSet(dk, m);
+
+  onProgress?.(`✓ ${dispDate(d)} 完成 ${Object.keys(m).length}筆`);
+  return m;
+}
+
+/* ══════════════════════════════════════════
+   MAIN
+══════════════════════════════════════════ */
+async function main() {
+  showDebug();
+  try {
+    /* Step 0: 載入設定檔 */
+    await loadConfig();
+
+    /* Step 1: 計算日期 + 清理過期快取 */
+    stepActive(1, '計算交易日期…');
+    cachePurge();
+    renderCacheDates(); // 先渲染目前快取（頁面初始狀態）
+    const cs = cacheStats();
+    tradingDays = getTradingDaysAroundAnchor(anchorDate, DAYS_BEFORE, DAYS_AFTER);
+    dbg('▶ 查詢日期:', tradingDays.map(twseDate).join(', '));
+    dbg(`▶ 快取現況: ${cs.count} 天 / ${cs.kb} KB`);
+    stepDone(1, `日期：${tradingDays.map(dispDate).join(' / ')} | 快取 ${cs.count} 天`);
+
+    /* Steps 2-5: 5 天資料（各天 4 API 並行，有快取直接讀） */
+    stepActive(2, '載入行情資料（5 日 × 4 API）…');
+    const msgs = [];
+    const dayMaps = await Promise.all(
+      tradingDays.map(d => fetchDayMap(d, m => { msgs.push(m); stepActive(2, msgs.join('  ')); }))
+    );
+    const fromCache = tradingDays.filter(d => !!cacheGet(twseDate(d))).length;
+    stepDone(2, `5 日載入完成（快取 ${fromCache} 日）`);
+    stepDone(3, '—'); stepDone(4, '—'); stepDone(5, '—');
+
+    /* Step 6: 整合 + 篩選 */
+    stepActive(6, '整合資料並渲染…');
+    dbg(`▶ 合併後每日股數: ${dayMaps.map(m => Object.keys(m).length+'筆').join(' / ')}`);
+
+    // 以基準日（ANCHOR_IDX = 2）為主要篩選依據
+    const anchorMap = dayMaps[ANCHOR_IDX] || {};
+    const codesWithDT = new Set();
+    for (const [code, s] of Object.entries(anchorMap)) {
+      if ((s.dtBuyAmt || 0) > 0 || (s.dtVolume || 0) > 0) {
+        codesWithDT.add(code);
+      }
+    }
+    // 若基準日無資料（未來日期），fallback 到所有日期
+    if (codesWithDT.size === 0) {
+      for (const dm of dayMaps) {
+        for (const [code, s] of Object.entries(dm)) {
+          if ((s.dtBuyAmt || 0) > 0 || (s.dtVolume || 0) > 0) codesWithDT.add(code);
+        }
+      }
+    }
+
+    // Build final stock list
+    allStocks = [];
+    for (const code of codesWithDT) {
+      let name = '', market = '';
+      const days = dayMaps.map(dm => dm[code] || null);
+      for (const d of days) {
+        if (d?.name)   name   = d.name;
+        if (d?.market) market = d.market;
+        if (name && market) break;
+      }
+      allStocks.push({ code, name, market, days });
+    }
+
+    dbg(`▶ 有當沖紀錄: ${codesWithDT.size} 檔，最終 allStocks: ${allStocks.length} 筆`);
+    stepDone(6, `共 ${allStocks.length} 檔有當沖紀錄`);
+    renderCacheDates(); // 新增快取後更新日期列
+
+    // Show UI
+    $('loadingState').style.display = 'none';
+    $('ctrlBar').style.display      = '';
+    $('stockList').style.display    = '';
+    $('totalCount').textContent     = allStocks.length;
+
+    applyFilterSort();
+
+  } catch (err) {
+    $('loadingState').innerHTML = `
+      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:24px;text-align:center;max-width:440px;">
+        <h3 style="color:#dc2626;margin-bottom:8px;">⚠️ 載入失敗</h3>
+        <p style="font-size:12px;color:#6b7280;">${esc(err.message)}</p>
+        <p style="font-size:11px;color:#9ca3af;margin-top:6px;">請確認 CORS Proxy 正常或稍後再試。</p>
+        <button onclick="location.reload()" style="margin-top:12px;padding:7px 20px;background:#3b82f6;color:#fff;border:none;border-radius:7px;cursor:pointer;font-size:12px;">重新載入</button>
+      </div>`;
+  }
+}
+
+/* ══════════════════════════════════════════
+   FILTER + SORT + RENDER
+══════════════════════════════════════════ */
+let currentMkt  = 'all';
+let currentSort = 'dtBuyZh';
+let searchKw    = '';
+
+function applyFilterSort() {
+  let data = allStocks;
+
+  if (currentMkt === 'twse') data = data.filter(s => s.market === 'TWSE');
+  if (currentMkt === 'tpex') data = data.filter(s => s.market === 'TPEX');
+  if (searchKw) {
+    const kw = searchKw.toLowerCase();
+    data = data.filter(s => s.code.includes(kw) || s.name.toLowerCase().includes(kw));
+  }
+
+  // 以基準日（ANCHOR_IDX）排序
+  data = [...data].sort((a, b) => {
+    const aV = getVal(a.days[ANCHOR_IDX], currentSort);
+    const bV = getVal(b.days[ANCHOR_IDX], currentSort);
+    return bV - aV;
+  });
+
+  filtered = data;
+  page = 0;
+  $('stockList').innerHTML = '';
+  $('showCount').textContent = Math.min(PAGE_SIZE, filtered.length);
+  $('totalCount').textContent = filtered.length;
+  renderPage();
+}
+
+function getVal(d0, key) {
+  if (!d0) return 0;
+  switch (key) {
+    case 'dtBuyZh':    return d0.dtBuyZh   || 0;
+    case 'dtSellZh':   return d0.dtSellZh  || 0;
+    case 'tradingPct': return d0.tradingPct || 0;
+    case 'changePct':  return d0.changePct  || 0;
+    case 'volume':     return d0.volume     || 0;
+    default:           return 0;
+  }
+}
+
+function renderPage() {
+  const start = page * PAGE_SIZE;
+  const slice = filtered.slice(start, start + PAGE_SIZE);
+  const list  = $('stockList');
+
+  for (const stock of slice) {
+    const el = document.createElement('div');
+    el.className = 'stock-row';
+    el.innerHTML = buildRow(stock);
+    list.appendChild(el);
+  }
+
+  page++;
+  const shown = Math.min(page * PAGE_SIZE, filtered.length);
+  $('showCount').textContent = shown;
+  $('loadMoreWrap').style.display = shown < filtered.length ? '' : 'none';
+}
+
+/* ══════════════════════════════════════════
+   BUILD ROW HTML
+══════════════════════════════════════════ */
+function buildRow(stock) {
+  const d0 = stock.days[ANCHOR_IDX] || {};   // 基準日資料當標題
+  const dir = d0.changePct > 0 ? 'up' : d0.changePct < 0 ? 'dn' : 'neu';
+  const priceStr = d0.close ? d0.close.toFixed(2) : '—';
+  const chgStr   = d0.changePct != null && d0.close
+    ? (d0.changePct >= 0 ? '+' : '') + d0.changePct.toFixed(2) + '%'
+    : '—';
+
+  const cards = stock.days.map((day, i) => buildCard(day, i, tradingDays[i])).join('');
+
+  return `
+  <div class="stock-hd">
+    <input type="checkbox" class="stock-check">
+    <span class="stock-code">${esc(stock.code)}</span>
+    <span class="stock-name">${esc(stock.name)}</span>
+    <span class="market-badge ${stock.market.toLowerCase()}">${esc(stock.market)}</span>
+    <span class="stock-d0-info">
+      <span class="clr-${dir}">${esc(priceStr)}</span>
+      <span class="clr-${dir}" style="font-size:11px;">${esc(chgStr)}</span>
+    </span>
+  </div>
+  <div class="days-wrap">${cards}</div>`;
+}
+
+/* ══════════════════════════════════════════
+   BUILD CARD HTML
+══════════════════════════════════════════ */
+// idx → 標籤：0=D-2, 1=D-1, 2=基準, 3=D+1, 4=D+2
+const DAY_LABELS = ['D-2','D-1','基準','D+1','D+2'];
+
+function buildCard(day, idx, dateObj) {
+  const dateStr  = dateObj ? dispDate(dateObj) : '—';
+  const isAnchor = idx === ANCHOR_IDX;
+  const label    = DAY_LABELS[idx] ?? `D[${idx}]`;
+
+  if (!day || day.close == null) {
+    return `
+    <div class="day-card ${isAnchor?'d0':''} no-data">
+      <div class="card-top">
+        <span class="day-label">${esc(label)}</span>
+        <span class="card-date">${esc(dateStr)}</span>
+      </div>
+      <div class="no-data-txt">無資料</div>
+    </div>`;
+  }
+
+  const dir    = day.changePct > 0 ? 'up' : day.changePct < 0 ? 'dn' : 'neu';
+  const chgStr = (day.changePct >= 0 ? '+' : '') + day.changePct.toFixed(2) + '%';
+
+  const metrics     = (CFG ?? FALLBACK_CFG).display.metrics;
+  const metricsHtml = metrics.map(m => {
+    const { text, isDash } = fmtMetric(m.key ? day[m.key] : null, m.format);
+    return `<div class="met">
+        <span class="met-l">${esc(m.label)}</span>
+        <span class="met-v ${isDash ? 'dash' : ''}">${esc(text)}</span>
+      </div>`;
+  }).join('');
+
+  return `
+  <div class="day-card ${isAnchor?'d0':''}">
+    <div class="card-top">
+      <span class="day-label">${esc(label)}</span>
+      <span class="card-date">${esc(dateStr)}</span>
+    </div>
+    <div class="card-price ${dir}">${esc(day.close.toFixed(2))}</div>
+    <div class="card-chg  ${dir}">${esc(chgStr)}</div>
+    <div class="card-metrics">
+      ${metricsHtml}
+    </div>
+  </div>`;
+}
+
+/* ══════════════════════════════════════════
+   EVENTS
+══════════════════════════════════════════ */
+$('searchInput').addEventListener('input', e => {
+  searchKw = e.target.value.trim();
+  applyFilterSort();
+});
+
+$('mktGroup').addEventListener('click', e => {
+  const btn = e.target.closest('[data-mkt]');
+  if (!btn) return;
+  currentMkt = btn.dataset.mkt;
+  document.querySelectorAll('#mktGroup button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilterSort();
+});
+
+$('sortSel').addEventListener('change', e => {
+  currentSort = e.target.value;
+  applyFilterSort();
+});
+
+$('loadMoreBtn').addEventListener('click', renderPage);
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+main();
+</script>
+</body>
+</html>

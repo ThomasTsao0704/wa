@@ -1,0 +1,149 @@
+{
+  "_comment": "每日收盤行情 × 當沖分析 — API 欄位對照與顯示設定",
+
+  "apis": {
+
+    "twseDaily": {
+      "_desc": "上市收盤行情 MI_INDEX",
+      "baseUrl": "https://www.twse.com.tw/rwd/zh/afterTrading/MI_INDEX",
+      "params": { "type": "ALLBUT0999", "response": "json" },
+      "dateFormat": "YYYYMMDD",
+      "responseType": "json",
+      "tableSelect": { "titleContains": "收盤行情", "fallbackLast": true },
+      "codePattern": "^\\d{4}$",
+      "market": "TWSE",
+      "signedChange": true,
+      "fields": {
+        "code":   { "match": "代號",           "pos": 0,    "_desc": "股票代號" },
+        "name":   { "match": "名稱",           "pos": 1,    "_desc": "股票名稱" },
+        "open":   { "match": "開盤",           "pos": null, "_desc": "開盤價" },
+        "high":   { "match": "最高",           "pos": null, "_desc": "最高價" },
+        "low":    { "match": "最低",           "pos": null, "_desc": "最低價" },
+        "close":  { "match": "收盤",           "pos": null, "_desc": "收盤價" },
+        "dir":    { "match": "漲跌.*[+\\-/]",  "pos": null, "_desc": "漲跌方向符號（+/-），需套用至 chg" },
+        "chg":    { "match": "漲跌價差",        "pos": null, "_desc": "漲跌絕對值，配合 dir 轉為帶號" },
+        "volume": { "match": "成交股數",        "pos": null, "_desc": "成交股數（股）" },
+        "trades": { "match": "成交筆數",        "pos": null, "_desc": "成交筆數" },
+        "amount": { "match": "成交金額",        "pos": null, "_desc": "成交金額（元）" }
+      }
+    },
+
+    "twseDT": {
+      "_desc": "上市當沖 TWTB4U（取 tables[1]）",
+      "baseUrl": "https://www.twse.com.tw/exchangeReport/TWTB4U",
+      "params": { "response": "json" },
+      "dateFormat": "YYYYMMDD",
+      "responseType": "json",
+      "requireStat": "OK",
+      "tableSelect": { "index": 1, "fallbackFirst": true },
+      "codePattern": "^\\d{4}$",
+      "fields": {
+        "code":    { "match": "代號",           "pos": 0, "_desc": "股票代號" },
+        "name":    { "match": "名稱",           "pos": 1, "_desc": "股票名稱" },
+        "dtVol":   { "match": "沖銷.*成交股數",  "pos": 3, "_desc": "當沖成交股數（股）" },
+        "buyAmt":  { "match": "買進成交金額",    "pos": 4, "_desc": "當沖買進金額（元）" },
+        "sellAmt": { "match": "賣出成交金額",    "pos": 5, "_desc": "當沖賣出金額（元）" }
+      }
+    },
+
+    "tpexDaily": {
+      "_desc": "上櫃收盤 afterTrading/otc（tables[0]，日期為西元 YYYY/MM/DD）",
+      "baseUrl": "https://www.tpex.org.tw/www/zh-tw/afterTrading/otc",
+      "params": { "type": "AL", "response": "json" },
+      "dateFormat": "YYYY/MM/DD",
+      "responseType": "text+json",
+      "tableSelect": { "index": 0 },
+      "codePattern": "^\\d{4,5}$",
+      "market": "TPEX",
+      "signedChange": false,
+      "fields": {
+        "code":   { "match": "代號",    "pos": 0,    "_desc": "股票代號" },
+        "name":   { "match": "名稱",    "pos": 1,    "_desc": "股票名稱" },
+        "close":  { "match": "收盤",    "pos": null, "_desc": "收盤價" },
+        "change": { "match": "^漲跌$",  "pos": null, "_desc": "漲跌（已帶正負號）" },
+        "open":   { "match": "開盤",    "pos": null, "_desc": "開盤價" },
+        "high":   { "match": "最高",    "pos": null, "_desc": "最高價" },
+        "low":    { "match": "最低",    "pos": null, "_desc": "最低價" },
+        "volume": { "match": "成交股數", "pos": null, "_desc": "成交股數（股）" },
+        "trades": { "match": "成交筆數", "pos": null, "_desc": "成交筆數" }
+      }
+    },
+
+    "tpexDT": {
+      "_desc": "上櫃當沖 intraday/stat（Python 以 HTML 抓取，JS 優先 JSON 再 fallback HTML）",
+      "baseUrl": "https://www.tpex.org.tw/www/zh-tw/intraday/stat",
+      "params": { "type": "Daily", "id": "", "response": "json" },
+      "dateFormat": "YYYY/MM/DD",
+      "responseType": "json+html",
+      "tableSelect": { "index": 0 },
+      "codePattern": "^\\d{4,5}$",
+      "fields": {
+        "code":    { "match": "代號",               "pos": 0, "_desc": "股票代號" },
+        "dtVol":   { "match": "沖銷.*股數|成交股數",  "pos": 2, "_desc": "當沖成交股數（股）" },
+        "buyAmt":  { "match": "買進.*金額",           "pos": 3, "_desc": "當沖買進金額（元）" },
+        "sellAmt": { "match": "賣出.*金額",           "pos": 4, "_desc": "當沖賣出金額（元）" }
+      }
+    }
+
+  },
+
+  "display": {
+    "dayLabels": ["D-2", "D-1", "基準", "D+1", "D+2"],
+
+    "metrics": [
+      {
+        "key": "dtBuyZh",
+        "label": "深量",
+        "format": "integer",
+        "_desc": "當沖買進估算張數 = dtBuyAmt / close / 1000",
+        "formula": {
+          "op": "divchain",
+          "args": ["dtBuyAmt", "close", 1000],
+          "guard": ["dtBuyAmt", "close"]
+        }
+      },
+      {
+        "key": "dtSellZh",
+        "label": "出量",
+        "format": "integer",
+        "_desc": "當沖賣出估算張數 = dtSellAmt / close / 1000",
+        "formula": {
+          "op": "divchain",
+          "args": ["dtSellAmt", "close", 1000],
+          "guard": ["dtBuyAmt", "close"]
+        }
+      },
+      {
+        "key": "tradingPct",
+        "label": "交易%",
+        "format": "percent1",
+        "_desc": "當沖量÷總量×100；無當沖量時以張數估算",
+        "formula": {
+          "op": "pct",
+          "args": ["dtVolume", "volume"],
+          "guard": ["dtVolume", "volume"],
+          "fallback": {
+            "op": "pct_scaled",
+            "args": [{ "sum": ["dtBuyZh", "dtSellZh"] }, { "div": ["volume", 1000] }],
+            "scale": 50,
+            "guard": ["dtBuyZh", "volume"]
+          }
+        }
+      },
+      {
+        "key": null,
+        "label": "52H%",
+        "format": "dash",
+        "_desc": "52週高點百分比（待接）"
+      }
+    ],
+
+    "sortOptions": [
+      { "value": "dtBuyZh",    "label": "深量（買進）" },
+      { "value": "dtSellZh",   "label": "出量（賣出）" },
+      { "value": "tradingPct", "label": "當沖比" },
+      { "value": "changePct",  "label": "漲幅" },
+      { "value": "volume",     "label": "成交量" }
+    ]
+  }
+}

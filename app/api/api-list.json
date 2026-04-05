@@ -1,0 +1,1847 @@
+{
+    "generated_from": "API.csv",
+    "encoding": "utf-8-sig",
+    "count": 368,
+    "items": [
+        {
+            "id": "3c839c77",
+            "name": "上市公司股利分派情形",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap45_L"
+        },
+        {
+            "id": "71a23ee3",
+            "name": "上市公司企業ESG資訊揭露彙總資料-反競爭行為法律訴訟",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap46_L_20"
+        },
+        {
+            "id": "4c39883c",
+            "name": "上市公司企業ESG資訊揭露彙總資料-風險管理政策",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap46_L_19"
+        },
+        {
+            "id": "e69530ac",
+            "name": "上市公司企業ESG資訊揭露彙總資料-持股及控制力",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap46_L_18"
+        },
+        {
+            "id": "bb263fcc",
+            "name": "上市公司企業ESG資訊揭露彙總資料-普惠金融",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap46_L_17"
+        },
+        {
+            "id": "5a7d6fd8",
+            "name": "上市公司企業ESG資訊揭露彙總資料-資訊安全",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap46_L_16"
+        },
+        {
+            "id": "ab2332e1",
+            "name": "上市公司企業ESG資訊揭露彙總資料-社區關係",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap46_L_15"
+        },
+        {
+            "id": "167f52d0",
+            "name": "上市公司企業ESG資訊揭露彙總資料-產品品質與安全",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap46_L_14"
+        },
+        {
+            "id": "db7a0440",
+            "name": "上市公司企業ESG資訊揭露彙總資料-供應鏈管理",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap46_L_13"
+        },
+        {
+            "id": "2a04464a",
+            "name": "上市公司企業ESG資訊揭露彙總資料-食品安全",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap46_L_12"
+        },
+        {
+            "id": "a46dd0c6",
+            "name": "上市公司企業ESG資訊揭露彙總資料-產品生命週期",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap46_L_11"
+        },
+        {
+            "id": "0b27565e",
+            "name": "上市公司企業ESG資訊揭露彙總資料-燃料管理",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap46_L_10"
+        },
+        {
+            "id": "37561fac",
+            "name": "上市公司企業ESG資訊揭露彙總資料-功能性委員會",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap46_L_9"
+        },
+        {
+            "id": "04ba0e4e",
+            "name": "上市公司企業ESG資訊揭露彙總資料-氣候相關議題管理",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap46_L_8"
+        },
+        {
+            "id": "2f01ad72",
+            "name": "公開發行公司每月營業收入彙總表",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap05_P"
+        },
+        {
+            "id": "f86f2083",
+            "name": "上市公司企業ESG資訊揭露彙總資料-投資人溝通",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap46_L_7"
+        },
+        {
+            "id": "73269220",
+            "name": "上市公司企業ESG資訊揭露彙總資料-董事會",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap46_L_6"
+        },
+        {
+            "id": "62ce039f",
+            "name": "上市公司企業ESG資訊揭露彙總資料-人力發展",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap46_L_5"
+        },
+        {
+            "id": "d2eb2e83",
+            "name": "上市公司企業ESG資訊揭露彙總資料-廢棄物管理",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap46_L_4"
+        },
+        {
+            "id": "9821a2ea",
+            "name": "上市公司企業ESG資訊揭露彙總資料-水資源管理",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap46_L_3"
+        },
+        {
+            "id": "70735e68",
+            "name": "上市公司企業ESG資訊揭露彙總資料-能源管理",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap46_L_2"
+        },
+        {
+            "id": "6ddfd36a",
+            "name": "上市公司企業ESG資訊揭露彙總資料-溫室氣體排放",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap46_L_1"
+        },
+        {
+            "id": "58fa4c47",
+            "name": "外國公司向證交所申請第一上市之公司",
+            "url": "https://openapi.twse.com.tw/v1/company/applylistingForeign"
+        },
+        {
+            "id": "908e4439",
+            "name": "最近上市公司",
+            "url": "https://openapi.twse.com.tw/v1/company/newlisting"
+        },
+        {
+            "id": "891f4973",
+            "name": "終止上市公司",
+            "url": "https://openapi.twse.com.tw/v1/company/suspendListingCsvAndHtml"
+        },
+        {
+            "id": "80ddacd9",
+            "name": "申請上市之本國公司",
+            "url": "https://openapi.twse.com.tw/v1/company/applylistingLocal"
+        },
+        {
+            "id": "a8633000",
+            "name": "上市公司每日重大訊息",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap04_L"
+        },
+        {
+            "id": "9f786be9",
+            "name": "上市公司基本資料",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap03_L"
+        },
+        {
+            "id": "b87c5f39",
+            "name": "上市公司持股逾 10% 大股東名單",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap02_L"
+        },
+        {
+            "id": "ebc7e473",
+            "name": "上市公司各產業EPS統計資訊",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap14_L"
+        },
+        {
+            "id": "7b12d392",
+            "name": "上市公司董事、監察人持股不足法定成數彙總表",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap08_L"
+        },
+        {
+            "id": "87b59243",
+            "name": "上市公司董監事持股餘額明細資料",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap11_L"
+        },
+        {
+            "id": "3e3c3a10",
+            "name": "上市公司每日內部人持股轉讓事前申報表-持股轉讓日報表",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap12_L"
+        },
+        {
+            "id": "285bb9a0",
+            "name": "上市公司每日內部人持股轉讓事前申報表-持股未轉讓日報表",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap13_L"
+        },
+        {
+            "id": "e6343ff3",
+            "name": "上市公司金管會證券期貨局裁罰案件專區",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap22_L"
+        },
+        {
+            "id": "a9be96ef",
+            "name": "上市公司獨立董監事兼任情形彙總表",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap30_L"
+        },
+        {
+            "id": "2621a321",
+            "name": "上市公司董事酬金相關資訊",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap29_A_L"
+        },
+        {
+            "id": "95953e1e",
+            "name": "上市公司監察人酬金相關資訊",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap29_B_L"
+        },
+        {
+            "id": "bb42a231",
+            "name": "上市公司合併報表董事酬金相關資訊",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap29_C_L"
+        },
+        {
+            "id": "aaae34d0",
+            "name": "上市公司合併報表監察人酬金相關資訊",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap29_D_L"
+        },
+        {
+            "id": "207f348b",
+            "name": "上市公司違反資訊申報、重大訊息及說明記者會規定專區",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap23_L"
+        },
+        {
+            "id": "3c8b388d",
+            "name": "上市公司 103 年應編製與申報 CSR 報告書名單",
+            "url": "https://openapi.twse.com.tw/v1/static/20151104/CSR103"
+        },
+        {
+            "id": "24c154f7",
+            "name": "公開發行公司基本資料",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap03_P"
+        },
+        {
+            "id": "cba84604",
+            "name": "集中市場公布處置股票",
+            "url": "https://openapi.twse.com.tw/v1/announcement/punish"
+        },
+        {
+            "id": "5dd6ddba",
+            "name": "上市公司董事、監察人持股不足法定成數連續達3個月以上彙總表",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap10_L"
+        },
+        {
+            "id": "06537c40",
+            "name": "上市公司股東會公告-召集股東常(臨時)會公告資料彙總表(95年度起適用)",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap38_L"
+        },
+        {
+            "id": "1b0ff96b",
+            "name": "上市公司經營權及營業範圍異(變)動專區-經營權異動公司",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap24_L"
+        },
+        {
+            "id": "d73b4638",
+            "name": "上市公司經營權及營業範圍異(變)動專區-經營權異動且營業範圍重大變更停止買賣公司",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap26_L"
+        },
+        {
+            "id": "8af9e3d5",
+            "name": "上市公司召開股東常 (臨時) 會日期、地點及採用電子投票情形等資料彙總表",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap41_L"
+        },
+        {
+            "id": "80feaf7b",
+            "name": "上市公司經營權及營業範圍異(變)動專區-營業範圍重大變更公司",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap25_L"
+        },
+        {
+            "id": "6dc92538",
+            "name": "上市公司經營權及營業範圍異(變)動專區-經營權異動且營業範圍重大變更列為變更交易公司",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap27_L"
+        },
+        {
+            "id": "2d4d8bcc",
+            "name": "上市公司公司治理之相關規程規則",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap32_L"
+        },
+        {
+            "id": "7b3e83a0",
+            "name": "上市公司董事長是否兼任總經理",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap33_L"
+        },
+        {
+            "id": "9ad49ead",
+            "name": "上市公司董事、監察人質權設定占董事及監察人實際持有股數彙總表",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap09_L"
+        },
+        {
+            "id": "68647bd0",
+            "name": "上市公司採累積投票制、全額連記法、候選人提名制選任董監事及當選資料彙總表",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap34_L"
+        },
+        {
+            "id": "13d37175",
+            "name": "上市公司股東行使提案權情形彙總表",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap35_L"
+        },
+        {
+            "id": "47fa48ad",
+            "name": "上市個股日本益比、殖利率及股價淨值比（依代碼查詢）",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/BWIBBU_ALL"
+        },
+        {
+            "id": "a0f66a9a",
+            "name": "上市個股日收盤價及月平均價",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_AVG_ALL"
+        },
+        {
+            "id": "73d15ae3",
+            "name": "上市個股日成交資訊",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL"
+        },
+        {
+            "id": "81ddc5c5",
+            "name": "上市個股月成交資訊",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/FMSRFK_ALL"
+        },
+        {
+            "id": "03247039",
+            "name": "上市個股年成交資訊",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/FMNPTK_ALL"
+        },
+        {
+            "id": "fd35668e",
+            "name": "每日收盤行情-大盤統計資訊",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/MI_INDEX"
+        },
+        {
+            "id": "46b08fb6",
+            "name": "集中市場外資及陸資投資類股持股比率表",
+            "url": "https://openapi.twse.com.tw/v1/fund/MI_QFIIS_cat"
+        },
+        {
+            "id": "ff20185a",
+            "name": "集中市場外資及陸資持股前 20 名彙總表",
+            "url": "https://openapi.twse.com.tw/v1/fund/MI_QFIIS_sort_20"
+        },
+        {
+            "id": "8e5ab029",
+            "name": "上市個股首五日無漲跌幅",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/TWT88U"
+        },
+        {
+            "id": "f6aea339",
+            "name": "投資理財節目異常推介個股",
+            "url": "https://openapi.twse.com.tw/v1/Announcement/BFZFZU_T"
+        },
+        {
+            "id": "75c0a104",
+            "name": "上市股票每日當日沖銷交易標的及統計",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/TWTB4U"
+        },
+        {
+            "id": "cce539af",
+            "name": "集中市場暫停先賣後買當日沖銷交易標的預告表",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/TWTBAU1"
+        },
+        {
+            "id": "8c9cbd55",
+            "name": "集中市場暫停先賣後買當日沖銷交易歷史查詢",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/TWTBAU2"
+        },
+        {
+            "id": "1d45b641",
+            "name": "每 5 秒委託成交統計",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/MI_5MINS"
+        },
+        {
+            "id": "031a03c2",
+            "name": "集中市場每日市場成交資訊",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/FMTQIK"
+        },
+        {
+            "id": "f47ff457",
+            "name": "集中市場每日成交量前二十名證券",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/MI_INDEX20"
+        },
+        {
+            "id": "ce004804",
+            "name": "集中市場零股交易行情單",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/TWT53U"
+        },
+        {
+            "id": "531dfebb",
+            "name": "集中市場暫停交易證券",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/TWTAWU"
+        },
+        {
+            "id": "f6bca250",
+            "name": "集中市場盤後定價交易",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/BFT41U"
+        },
+        {
+            "id": "5f24bd00",
+            "name": "集中市場停資停券預告表",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/BFI84U"
+        },
+        {
+            "id": "12ee0b23",
+            "name": "集中市場融資融券餘額",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/MI_MARGN"
+        },
+        {
+            "id": "07f171c6",
+            "name": "集中市場鉅額交易日成交量值統計",
+            "url": "https://openapi.twse.com.tw/v1/block/BFIAUU_d"
+        },
+        {
+            "id": "47ea1283",
+            "name": "集中市場鉅額交易月成交量值統計",
+            "url": "https://openapi.twse.com.tw/v1/block/BFIAUU_m"
+        },
+        {
+            "id": "422a8724",
+            "name": "集中市場鉅額交易年成交量值統計",
+            "url": "https://openapi.twse.com.tw/v1/block/BFIAUU_y"
+        },
+        {
+            "id": "0572af5a",
+            "name": "每日第一上市外國股票成交量值",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/STOCK_FIRST"
+        },
+        {
+            "id": "65682525",
+            "name": "集中市場證券變更交易",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/TWT85U"
+        },
+        {
+            "id": "47ed810f",
+            "name": "有價證券集中交易市場開（休）市日期",
+            "url": "https://openapi.twse.com.tw/v1/holidaySchedule/holidaySchedule"
+        },
+        {
+            "id": "321b2c02",
+            "name": "上市個股日本益比、殖利率及股價淨值比（依日期查詢）",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/BWIBBU_d"
+        },
+        {
+            "id": "4c1f948b",
+            "name": "上市上櫃股票當日可借券賣出股數",
+            "url": "https://openapi.twse.com.tw/v1/SBL/TWT96U"
+        },
+        {
+            "id": "d84c97c2",
+            "name": "上市個股股價升降幅度",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/TWT84U"
+        },
+        {
+            "id": "4060c453",
+            "name": "集中市場漲跌證券數統計表",
+            "url": "https://openapi.twse.com.tw/v1/opendata/twtazu_od"
+        },
+        {
+            "id": "b2ce5656",
+            "name": "電子式交易統計資訊",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap19"
+        },
+        {
+            "id": "3c377d00",
+            "name": "上市權證基本資料彙總表",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap37_L"
+        },
+        {
+            "id": "79110668",
+            "name": "集中市場公布注意累計次數異常資訊",
+            "url": "https://openapi.twse.com.tw/v1/announcement/notetrans"
+        },
+        {
+            "id": "0ebdc4d7",
+            "name": "集中市場當日公布注意股票",
+            "url": "https://openapi.twse.com.tw/v1/announcement/notice"
+        },
+        {
+            "id": "01077384",
+            "name": "上市股票除權除息預告表",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/TWT48U_ALL"
+        },
+        {
+            "id": "3b967b56",
+            "name": "公發公司資產負債表-一般業",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap07_X_ci"
+        },
+        {
+            "id": "585a7c99",
+            "name": "公發公司資產負債表-異業",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap07_X_mim"
+        },
+        {
+            "id": "3e53a3c8",
+            "name": "公發公司綜合損益表-金融業",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_X_basi"
+        },
+        {
+            "id": "1cdb2bd5",
+            "name": "公發公司綜合損益表-證券期貨業",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_X_bd"
+        },
+        {
+            "id": "3df6c601",
+            "name": "公發公司綜合損益表-一般業",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_X_ci"
+        },
+        {
+            "id": "1123965c",
+            "name": "公發公司綜合損益表-金控業",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_X_fh"
+        },
+        {
+            "id": "6f35c49e",
+            "name": "公發公司綜合損益表-保險業",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_X_ins"
+        },
+        {
+            "id": "3d4d357b",
+            "name": "公發公司綜合損益表-異業",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_X_mim"
+        },
+        {
+            "id": "b250ebd2",
+            "name": "上市公司每月營業收入彙總表",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap05_L"
+        },
+        {
+            "id": "49036fe7",
+            "name": "上市公司截至各季綜合損益財測達成情形(簡式)",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap15_L"
+        },
+        {
+            "id": "cadbe35c",
+            "name": "上市公司當季綜合損益經會計師查核(核閱)數與當季預測數差異達百分之十以上者，或截至當季累計差異達百分之二十以上者(簡式)",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap16_L"
+        },
+        {
+            "id": "9b8d54b5",
+            "name": "上市公司營益分析查詢彙總表(全體公司彙總報表)",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap17_L"
+        },
+        {
+            "id": "62fde051",
+            "name": "上市公司財務報告經監察人承認情形",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap31_L"
+        },
+        {
+            "id": "fdacc798",
+            "name": "上市公司綜合損益表(證券期貨業)",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_L_bd"
+        },
+        {
+            "id": "3a76ba46",
+            "name": "上市公司綜合損益表(一般業)",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_L_ci"
+        },
+        {
+            "id": "2bbbd1c5",
+            "name": "上市公司綜合損益表(金控業)",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_L_fh"
+        },
+        {
+            "id": "d45acbf6",
+            "name": "上市公司綜合損益表(保險業)",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_L_ins"
+        },
+        {
+            "id": "c757d8e5",
+            "name": "上市公司綜合損益表(異業)",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_L_mim"
+        },
+        {
+            "id": "ad5ff613",
+            "name": "上市公司資產負債表(證券期貨業)",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap07_L_bd"
+        },
+        {
+            "id": "61cfdcd2",
+            "name": "上市公司資產負債表(一般業)",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap07_L_ci"
+        },
+        {
+            "id": "0a49b336",
+            "name": "上市公司資產負債表(金控業)",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap07_L_fh"
+        },
+        {
+            "id": "33e549fb",
+            "name": "上市公司資產負債表(保險業)",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap07_L_ins"
+        },
+        {
+            "id": "679ba0d6",
+            "name": "上市公司資產負債表(異業)",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap07_L_mim"
+        },
+        {
+            "id": "167f1ac0",
+            "name": "公發公司資產負債表-金融業",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap07_X_basi"
+        },
+        {
+            "id": "909cfb2c",
+            "name": "公發公司資產負債表-證券期貨業",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap07_X_bd"
+        },
+        {
+            "id": "3783aa3a",
+            "name": "公發公司資產負債表-金控業",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap07_X_fh"
+        },
+        {
+            "id": "5a300f48",
+            "name": "公發公司資產負債表-保險業",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap07_X_ins"
+        },
+        {
+            "id": "cd30a1c1",
+            "name": "公發公司董監事持股餘額明細",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap11_P"
+        },
+        {
+            "id": "3d9d7e75",
+            "name": "上市公司綜合損益表(金融業)",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_L_basi"
+        },
+        {
+            "id": "69b11210",
+            "name": "上市公司資產負債表(金融業)",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap07_L_basi"
+        },
+        {
+            "id": "a9661bf8",
+            "name": "每日上市上櫃跨市場成交資訊",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/MI_INDEX4"
+        },
+        {
+            "id": "783a3e5b",
+            "name": "寶島股價指數歷史資料",
+            "url": "https://openapi.twse.com.tw/v1/indicesReport/FRMSA"
+        },
+        {
+            "id": "79297d00",
+            "name": "臺灣 50 指數歷史資料",
+            "url": "https://openapi.twse.com.tw/v1/indicesReport/TAI50I"
+        },
+        {
+            "id": "670ff2ca",
+            "name": "發行量加權股價指數歷史資料",
+            "url": "https://openapi.twse.com.tw/v1/indicesReport/MI_5MINS_HIST"
+        },
+        {
+            "id": "d6ee50b1",
+            "name": "發行量加權股價報酬指數",
+            "url": "https://openapi.twse.com.tw/v1/indicesReport/MFI94U"
+        },
+        {
+            "id": "cfd440af",
+            "name": "上市認購(售)權證年度發行量概況統計表",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap36_L"
+        },
+        {
+            "id": "6c294248",
+            "name": "上市認購(售)權證交易人數檔",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap43_L"
+        },
+        {
+            "id": "5b304fbb",
+            "name": "上市認購(售)權證每日成交資料檔",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap42_L"
+        },
+        {
+            "id": "de5037ee",
+            "name": "基金基本資料彙總表",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap47_L"
+        },
+        {
+            "id": "2282f272",
+            "name": "證交所活動訊息",
+            "url": "https://openapi.twse.com.tw/v1/news/eventList"
+        },
+        {
+            "id": "8d48cac8",
+            "name": "證交所新聞",
+            "url": "https://openapi.twse.com.tw/v1/news/newsList"
+        },
+        {
+            "id": "84c90501",
+            "name": "中央登錄公債補息資料表",
+            "url": "https://openapi.twse.com.tw/v1/exchangeReport/BFI61U"
+        },
+        {
+            "id": "c17d5f58",
+            "name": "定期定額前十名交易戶數證券統計",
+            "url": "https://openapi.twse.com.tw/v1/ETFReport/ETFRank"
+        },
+        {
+            "id": "5827a9b1",
+            "name": "開辦定期定額業務證券商名單",
+            "url": "https://openapi.twse.com.tw/v1/brokerService/secRegData"
+        },
+        {
+            "id": "c25a1efc",
+            "name": "證券商總公司基本資料",
+            "url": "https://openapi.twse.com.tw/v1/brokerService/brokerList"
+        },
+        {
+            "id": "def69f4e",
+            "name": "券商業務別人員數",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap01"
+        },
+        {
+            "id": "2fd635f9",
+            "name": "各券商每月月計表",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap20"
+        },
+        {
+            "id": "ccaa5ea2",
+            "name": "各券商收支概況表資料",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap21"
+        },
+        {
+            "id": "2ae89a14",
+            "name": "證券商基本資料",
+            "url": "https://openapi.twse.com.tw/v1/opendata/t187ap18"
+        },
+        {
+            "id": "638eb78f",
+            "name": "證券商營業員男女人數統計資料",
+            "url": "https://openapi.twse.com.tw/v1/opendata/OpenData_BRK01"
+        },
+        {
+            "id": "b9643119",
+            "name": "證券商分公司基本資料",
+            "url": "https://openapi.twse.com.tw/v1/opendata/OpenData_BRK02"
+        },
+        {
+            "id": "153d5b9a",
+            "name": "上櫃股票現股當沖交易標的資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_securities"
+        },
+        {
+            "id": "8a5af391",
+            "name": "上櫃當日公布暫停/恢復交易股票",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_spendi_today"
+        },
+        {
+            "id": "36c0c0ff",
+            "name": "上櫃歷史公布暫停/恢復交易股票",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_spendi_history"
+        },
+        {
+            "id": "80dd55dc",
+            "name": "申請上櫃公司",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_esb_applicant_companies"
+        },
+        {
+            "id": "998df129",
+            "name": "上櫃公布注意股票資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_trading_warning_information"
+        },
+        {
+            "id": "0d330891",
+            "name": "上櫃處置有價證券資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_disposal_information"
+        },
+        {
+            "id": "a61f9315",
+            "name": "上櫃公布注意累計次數異常資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_trading_warning_note"
+        },
+        {
+            "id": "f72fe3e6",
+            "name": "上櫃股票市場現況",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_mainborad_highlight"
+        },
+        {
+            "id": "1d0cb56e",
+            "name": "上櫃股票行情",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes"
+        },
+        {
+            "id": "3b9d0bda",
+            "name": "上櫃股票收盤行情",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes"
+        },
+        {
+            "id": "aaad66d2",
+            "name": "上櫃股票個股本益比、殖利率、股價淨值比",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_mainboard_peratio_analysis"
+        },
+        {
+            "id": "c65c3729",
+            "name": "上櫃股票融資融券餘額",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_mainboard_margin_balance"
+        },
+        {
+            "id": "f7b4d732",
+            "name": "上櫃股票現股當沖交易統計資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_intraday_trading_statistics"
+        },
+        {
+            "id": "76fc06cf",
+            "name": "上櫃股票熱門股證券商進出排行",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_active_broker_volume"
+        },
+        {
+            "id": "e4fbaa26",
+            "name": "上櫃股票融券借券賣出餘額",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_margin_sbl"
+        },
+        {
+            "id": "7811534a",
+            "name": "上櫃股票除權除息計算結果表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_exright_daily"
+        },
+        {
+            "id": "b54b5369",
+            "name": "上櫃股票除權除息預告表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_exright_prepost"
+        },
+        {
+            "id": "9061c6eb",
+            "name": "上櫃股票變更交易、分盤交易、管理股票與停止交易資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_cmode"
+        },
+        {
+            "id": "eae2371f",
+            "name": "上櫃股票零股交易資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_odd_stock"
+        },
+        {
+            "id": "1dd6f1be",
+            "name": "上櫃股票盤後定價行情",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_off_market"
+        },
+        {
+            "id": "7a9d42b5",
+            "name": "上櫃融資融券暫停融券賣出預告表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_margin_trading_term"
+        },
+        {
+            "id": "4913054d",
+            "name": "上櫃融資融券調整成數",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_margin_trading_adjust"
+        },
+        {
+            "id": "62e021b2",
+            "name": "上櫃融資融券標借",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_margin_trading_lend"
+        },
+        {
+            "id": "5ab31c09",
+            "name": "上櫃信用交易餘額概況表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_margin_trading_marginspot"
+        },
+        {
+            "id": "2165c462",
+            "name": "上櫃平盤下得融(借)券賣出之證券名單",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_margin_trading_margin_mark"
+        },
+        {
+            "id": "f95ee88b",
+            "name": "上櫃融資融券使用率報表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_margin_trading_margin_used"
+        },
+        {
+            "id": "65650628",
+            "name": "上櫃融資融券增減排行表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_margin_trading_short_sell"
+        },
+        {
+            "id": "8eb392c3",
+            "name": "上櫃僑外資及陸資持股比例排行表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_3insti_qfii"
+        },
+        {
+            "id": "c17cb447",
+            "name": "上櫃各類股僑外資及陸資持股比例表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_3insti_qfii_industry"
+        },
+        {
+            "id": "ef3b0aca",
+            "name": "上櫃股票三大法人買賣明細資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_3insti_daily_trading"
+        },
+        {
+            "id": "fedf9215",
+            "name": "上櫃股票自營商買賣超彙總表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_3insti_dealer_trading"
+        },
+        {
+            "id": "bab74531",
+            "name": "上櫃漲跌停未成交資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_ceil_non_trading"
+        },
+        {
+            "id": "9db025a0",
+            "name": "上櫃日成交量值指數",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_daily_trading_index"
+        },
+        {
+            "id": "bc9481b1",
+            "name": "上櫃當日融券賣出與借券賣出成交量值",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_short_sell"
+        },
+        {
+            "id": "af43c92e",
+            "name": "上櫃各券商當日營業金額統計表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_daily_broker1"
+        },
+        {
+            "id": "f0632062",
+            "name": "上櫃盤中個股成交金額排行",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_active_dollar_volume"
+        },
+        {
+            "id": "c998a535",
+            "name": "上櫃盤中個股漲幅排行",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_active_advanced"
+        },
+        {
+            "id": "a06722bc",
+            "name": "上櫃盤中個股跌幅排行",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_active_declined"
+        },
+        {
+            "id": "408f9586",
+            "name": "上櫃應付現股當日沖銷券差借券費率",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_intraday_fee"
+        },
+        {
+            "id": "3d66ad4e",
+            "name": "上櫃暫停先賣後買當日沖銷交易標的預告表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_intraday_trading_pre"
+        },
+        {
+            "id": "2d282a17",
+            "name": "上櫃暫停先賣後買當日沖銷交易歷史查詢",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_intraday_trading_his"
+        },
+        {
+            "id": "68e6b479",
+            "name": "上櫃歷史個股市值排行",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_daily_market_value"
+        },
+        {
+            "id": "55f6ecb1",
+            "name": "上櫃歷史個股週轉率排行",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_daily_turnover"
+        },
+        {
+            "id": "93742395",
+            "name": "上櫃歷史個股日均量排行",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_trading_volumes_avg"
+        },
+        {
+            "id": "a206e872",
+            "name": "上櫃歷史個股日均值排行",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_trading_amount_avg"
+        },
+        {
+            "id": "436452d5",
+            "name": "上櫃歷史類股成交價量比重",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_trading_volume_ratio"
+        },
+        {
+            "id": "f7d4bcb8",
+            "name": "上櫃歷史個股本益比排行",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_pe_ratio_top10"
+        },
+        {
+            "id": "174df28a",
+            "name": "上櫃鉅額交易日成交資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_daily_qutoes_block"
+        },
+        {
+            "id": "f8de0941",
+            "name": "上櫃個股單一證券鉅額交易日成交資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_daily_trading_block"
+        },
+        {
+            "id": "969c48f8",
+            "name": "上櫃鉅額交易日成交量值統計",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_daily_trading_summary_odd"
+        },
+        {
+            "id": "b126b487",
+            "name": "上櫃鉅額交易月成交量值統計",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_monthly_trading_summary_block"
+        },
+        {
+            "id": "9bd8a794",
+            "name": "上櫃鉅額交易年成交量值統計",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_yearly_trading_summary_block"
+        },
+        {
+            "id": "30fcfe56",
+            "name": "上櫃歷史個股成交量排行",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_volume_rank"
+        },
+        {
+            "id": "e7c4ec59",
+            "name": "上櫃歷史個股成交值排行",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_amount_rank"
+        },
+        {
+            "id": "3bcaf3c4",
+            "name": "上櫃股票等價系統成交分價表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_prvol"
+        },
+        {
+            "id": "fb2d6f4a",
+            "name": "上櫃股票三大法人買賣金額彙總表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_3insti_summary"
+        },
+        {
+            "id": "0546991c",
+            "name": "上櫃股票投信買賣超彙總表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_3insti_trading"
+        },
+        {
+            "id": "074521e5",
+            "name": "鉅額交易歷史成交資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_daily_trade_block_day"
+        },
+        {
+            "id": "c205b694",
+            "name": "上櫃每日暫緩開盤股票",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_delayed_stock_open"
+        },
+        {
+            "id": "1edf32ba",
+            "name": "上櫃每日暫緩收盤股票",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_delayed_stock_close"
+        },
+        {
+            "id": "3c56814e",
+            "name": "上櫃首五日無漲跌幅資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_ipo_no_limit"
+        },
+        {
+            "id": "211f689f",
+            "name": "上櫃股票外資及陸資買賣超彙總表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_3insti_qfii_trading"
+        },
+        {
+            "id": "b5c39c02",
+            "name": "電子式交易統計資訊(上櫃)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap19_O"
+        },
+        {
+            "id": "68923dfa",
+            "name": "櫃買指數歷史資料",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_index"
+        },
+        {
+            "id": "477257ca",
+            "name": "富櫃50指數歷史收盤指數",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex50_index"
+        },
+        {
+            "id": "6e98060f",
+            "name": "櫃買「富櫃200指數」當日收盤指數",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex200_change"
+        },
+        {
+            "id": "ec73fa03",
+            "name": "上櫃公司治理指數當日成分股資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpcgi_constituents"
+        },
+        {
+            "id": "d093392f",
+            "name": "上櫃公司治理指數歷史收盤指數",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpcgi_reward_index"
+        },
+        {
+            "id": "9658d4fd",
+            "name": "上櫃公司治理指數當日收盤指數",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpcgi_change"
+        },
+        {
+            "id": "ebb0b8c3",
+            "name": "櫃買指數成分股",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_index_consti"
+        },
+        {
+            "id": "ddfe67a6",
+            "name": "櫃買指數與報酬指數之收市指數",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_reward_index"
+        },
+        {
+            "id": "4d3c2704",
+            "name": "櫃買「富櫃50指數」當日成分股",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex50_constituents"
+        },
+        {
+            "id": "173741ab",
+            "name": "櫃買「富櫃50指數」當日收盤指數",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex50_change"
+        },
+        {
+            "id": "62fd6004",
+            "name": "櫃買「高殖利率指數」當日成分股",
+            "url": "https://www.tpex.org.tw/openapi/v1/tphd_constituents"
+        },
+        {
+            "id": "889df44f",
+            "name": "櫃買「高殖利率指數」當日收盤指數",
+            "url": "https://www.tpex.org.tw/openapi/v1/tphd_change"
+        },
+        {
+            "id": "f1193bed",
+            "name": "櫃買「薪酬指數」當日成分股",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpci_constituents"
+        },
+        {
+            "id": "a7da03be",
+            "name": "櫃買「薪酬指數」當日收盤指數",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpci_change"
+        },
+        {
+            "id": "4aa56f8c",
+            "name": "櫃買「薪酬指數」歷史收盤指數",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpci_reward_index"
+        },
+        {
+            "id": "eea39677",
+            "name": "櫃買「勞工就業88指數」當日成分股",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_emp88_constituents"
+        },
+        {
+            "id": "00c826e5",
+            "name": "櫃買「勞工就業88指數」當日收盤指數",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_emp88_change"
+        },
+        {
+            "id": "999d8c8d",
+            "name": "櫃買「勞工就業88指數」歷史收盤指數",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_emp88_reward_index"
+        },
+        {
+            "id": "60af0dac",
+            "name": "櫃買「富櫃200指數」當日成分股",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex200_constituents"
+        },
+        {
+            "id": "9b50c8d0",
+            "name": "高殖利率指數歷史收盤指數",
+            "url": "https://www.tpex.org.tw/openapi/v1/tphd_index"
+        },
+        {
+            "id": "76948576",
+            "name": "本國興櫃公司EPS排名",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_esb_eps_rank"
+        },
+        {
+            "id": "1d1aca51",
+            "name": "興櫃公司資本額排名",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_esb_capitals_rank"
+        },
+        {
+            "id": "2b9e61b9",
+            "name": "上櫃公司企業ESG資訊揭露彙總資料-職業安全衛生",
+            "url": "https://www.tpex.org.tw/openapi/v1/t187ap46_O_21"
+        },
+        {
+            "id": "415ffd2f",
+            "name": "上櫃公司企業ESG資訊揭露彙總資料-功能性委員會",
+            "url": "https://www.tpex.org.tw/openapi/v1/t187ap46_O_9"
+        },
+        {
+            "id": "3c54f9f3",
+            "name": "上櫃公司企業ESG資訊揭露彙總資料-氣候相關議題管理",
+            "url": "https://www.tpex.org.tw/openapi/v1/t187ap46_O_8"
+        },
+        {
+            "id": "c1a48022",
+            "name": "上櫃公司企業ESG資訊揭露彙總資料-反競爭行為法律訴訟",
+            "url": "https://www.tpex.org.tw/openapi/v1/t187ap46_O_20"
+        },
+        {
+            "id": "d3c31c94",
+            "name": "上櫃公司企業ESG資訊揭露彙總資料-風險管理政策",
+            "url": "https://www.tpex.org.tw/openapi/v1/t187ap46_O_19"
+        },
+        {
+            "id": "ef529e07",
+            "name": "上櫃公司企業ESG資訊揭露彙總資料-社區關係",
+            "url": "https://www.tpex.org.tw/openapi/v1/t187ap46_O_15"
+        },
+        {
+            "id": "f94ff811",
+            "name": "上櫃公司企業ESG資訊揭露彙總資料-供應鏈管理",
+            "url": "https://www.tpex.org.tw/openapi/v1/t187ap46_O_13"
+        },
+        {
+            "id": "5b40e523",
+            "name": "上櫃公司企業ESG資訊揭露彙總資料-食品安全",
+            "url": "https://www.tpex.org.tw/openapi/v1/t187ap46_O_12"
+        },
+        {
+            "id": "b155ba7a",
+            "name": "上櫃公司企業ESG資訊揭露彙總資料-產品品質與安全",
+            "url": "https://www.tpex.org.tw/openapi/v1/t187ap46_O_14"
+        },
+        {
+            "id": "77461a8a",
+            "name": "上櫃公司召開股東常 (臨時) 會日期、地點及採用電子投票情形等資料彙總表",
+            "url": "https://www.tpex.org.tw/openapi/v1/t187ap41_O"
+        },
+        {
+            "id": "1733c3c1",
+            "name": "興櫃公司每月營業收入彙總表",
+            "url": "https://www.tpex.org.tw/openapi/v1/t187ap05_R"
+        },
+        {
+            "id": "34a2a8c9",
+            "name": "上櫃公司企業ESG資訊揭露彙總資料-廢棄物管理",
+            "url": "https://www.tpex.org.tw/openapi/v1/t187ap46_O_4"
+        },
+        {
+            "id": "947aca10",
+            "name": "上櫃公司企業ESG資訊揭露彙總資料-能源管理",
+            "url": "https://www.tpex.org.tw/openapi/v1/t187ap46_O_2"
+        },
+        {
+            "id": "52dbcf9d",
+            "name": "上櫃公司企業ESG資訊揭露彙總資料-投資人溝通",
+            "url": "https://www.tpex.org.tw/openapi/v1/t187ap46_O_7"
+        },
+        {
+            "id": "ee0d9f3a",
+            "name": "上櫃公司企業ESG資訊揭露彙總資料-溫室氣體排放",
+            "url": "https://www.tpex.org.tw/openapi/v1/t187ap46_O_1"
+        },
+        {
+            "id": "88b2d16d",
+            "name": "上櫃公司企業ESG資訊揭露彙總資料-董事會",
+            "url": "https://www.tpex.org.tw/openapi/v1/t187ap46_O_6"
+        },
+        {
+            "id": "bbb75dee",
+            "name": "上櫃公司企業ESG資訊揭露彙總資料-人力發展",
+            "url": "https://www.tpex.org.tw/openapi/v1/t187ap46_O_5"
+        },
+        {
+            "id": "56e49d50",
+            "name": "上櫃公司企業ESG資訊揭露彙總資料-水資源管理",
+            "url": "https://www.tpex.org.tw/openapi/v1/t187ap46_O_3"
+        },
+        {
+            "id": "e2d963ab",
+            "name": "二十九大類股營收變化統計表",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap05_OA"
+        },
+        {
+            "id": "f0b412cf",
+            "name": "發行公司營收創新高一覽表(上櫃)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap05_OB"
+        },
+        {
+            "id": "fb8f9bdb",
+            "name": "上櫃公司股東行使提案權情形彙總表",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap35_O"
+        },
+        {
+            "id": "2e131cdb",
+            "name": "上櫃公司公司治理之相關規程規則",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap32_O"
+        },
+        {
+            "id": "c0499890",
+            "name": "上櫃公司採累積投票制、全額連記法、候選人提名制選任董監事及當選資料彙總表",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap34_O"
+        },
+        {
+            "id": "2c5a62c5",
+            "name": "上櫃公司董事長是否兼任總經理",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap33_O"
+        },
+        {
+            "id": "aeaf333b",
+            "name": "上櫃公司財務報告經監察人承認情形",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap31_O"
+        },
+        {
+            "id": "c8f5fa3a",
+            "name": "上櫃公司董事、監察人質權設定占董事及監察人實際持有股數彙總表",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap09_O"
+        },
+        {
+            "id": "78098867",
+            "name": "上櫃公司董事、監察人持股不足法定成數連續達3個月以上彙總表",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap10_O"
+        },
+        {
+            "id": "36798eb6",
+            "name": "上櫃公司經營權及營業範圍異(變)動專區-經營權異動公司",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap24_O"
+        },
+        {
+            "id": "c94fbebb",
+            "name": "上櫃公司經營權及營業範圍異(變)動專區-營業範圍重大變更公司",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap25_O"
+        },
+        {
+            "id": "cfc95631",
+            "name": "上櫃股票基本資料",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap03_O"
+        },
+        {
+            "id": "f1c78380",
+            "name": "興櫃公司基本資料",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap03_R"
+        },
+        {
+            "id": "fe3d9a1d",
+            "name": "上櫃公司每日重大訊息",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap04_O"
+        },
+        {
+            "id": "dbb774b4",
+            "name": "上櫃公司持股逾 10% 大股東名單",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap02_O"
+        },
+        {
+            "id": "bcea0c80",
+            "name": "上櫃公司經營權及營業範圍異(變)動專區-經營權異動且營業範圍重大變更停止買賣公司",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap26_O"
+        },
+        {
+            "id": "9b3479f3",
+            "name": "上櫃公司經營權及營業範圍異(變)動專區-經營權異動且營業範圍重大變更列為變更交易公司",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap27_O"
+        },
+        {
+            "id": "aa253f5f",
+            "name": "上櫃公司每月營業收入彙總表",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap05_O"
+        },
+        {
+            "id": "a0339e84",
+            "name": "上櫃股利分派情形-董事會通過",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap39_O"
+        },
+        {
+            "id": "32698eab",
+            "name": "興櫃公司董監事持股餘額明細資料",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap11_R"
+        },
+        {
+            "id": "a7c23a4a",
+            "name": "上櫃公司各產業EPS統計資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap14_O"
+        },
+        {
+            "id": "5156d810",
+            "name": "上櫃公司董事、監察人持股不足法定成數彙總表",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap08_O"
+        },
+        {
+            "id": "37f70673",
+            "name": "上櫃公司董監事持股餘額明細資料",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap11_O"
+        },
+        {
+            "id": "b8b593b0",
+            "name": "上櫃公司每日內部人持股轉讓事前申報表-持股轉讓日報表",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap12_O"
+        },
+        {
+            "id": "c55a699d",
+            "name": "上櫃公司每日內部人持股轉讓事前申報表-持股未轉讓日報表",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap13_O"
+        },
+        {
+            "id": "4c832b1a",
+            "name": "上櫃公司金管會證券期貨局裁罰案件專區",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap22_O"
+        },
+        {
+            "id": "8a585a95",
+            "name": "上櫃公司獨立董監事兼任情形彙總表",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap30_O"
+        },
+        {
+            "id": "39eaa656",
+            "name": "上櫃公司董事酬金相關資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap29_A_O"
+        },
+        {
+            "id": "31909aa8",
+            "name": "上櫃公司監察人酬金相關資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap29_B_O"
+        },
+        {
+            "id": "7db306ee",
+            "name": "上櫃公司合併報表董事酬金相關資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap29_C_O"
+        },
+        {
+            "id": "12be42e1",
+            "name": "上櫃公司合併報表監察人酬金相關資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap29_D_O"
+        },
+        {
+            "id": "f0061c69",
+            "name": "上櫃公司違反資訊申報、重大訊息及說明記者會規定專區",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap23_O"
+        },
+        {
+            "id": "243064b7",
+            "name": "可轉債資產交換ASO及ASW銀行承作餘額",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_dpsp_monthly_CBmcs007"
+        },
+        {
+            "id": "2a5e99ca",
+            "name": "國際債券當日盤中報價行情表(含寶島債)",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_international_bond_quotes"
+        },
+        {
+            "id": "e4a1fe86",
+            "name": "國際債券當日盤中成交行情表(含寶島債)",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_international_bond_trade"
+        },
+        {
+            "id": "dea30ff3",
+            "name": "國際債券(一般投資人)",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_international_bond_issue_investor"
+        },
+        {
+            "id": "107a56a0",
+            "name": "國際債券(僅售予專業投資人者)",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_international_bond_issue_org"
+        },
+        {
+            "id": "d9de2148",
+            "name": "美元固定利率不可贖回國際債券理論價格",
+            "url": "https://www.tpex.org.tw/openapi/v1/BDdos216UTF"
+        },
+        {
+            "id": "e7e40e90",
+            "name": "美元附息固定利率可贖回國際債券理論價格",
+            "url": "https://www.tpex.org.tw/openapi/v1/BDdos215UTF"
+        },
+        {
+            "id": "cff17b77",
+            "name": "美元零息可贖回國際債券理論價格",
+            "url": "https://www.tpex.org.tw/openapi/v1/BDdos209UTF"
+        },
+        {
+            "id": "fd3642d7",
+            "name": "轉(交)換公司債買賣斷券商買賣日報表",
+            "url": "https://www.tpex.org.tw/openapi/v1/bond_cb_daily"
+        },
+        {
+            "id": "524a6267",
+            "name": "公債發行資料下載",
+            "url": "https://www.tpex.org.tw/openapi/v1/bond_ISSBD1_data"
+        },
+        {
+            "id": "c6f4c204",
+            "name": "外國金融債發行資料下載",
+            "url": "https://www.tpex.org.tw/openapi/v1/bond_ISSBD2_data"
+        },
+        {
+            "id": "04621d86",
+            "name": "金融債發行資料下載",
+            "url": "https://www.tpex.org.tw/openapi/v1/bond_ISSBD3_data"
+        },
+        {
+            "id": "57a07e82",
+            "name": "普通債發行資料下載",
+            "url": "https://www.tpex.org.tw/openapi/v1/bond_ISSBD4_data"
+        },
+        {
+            "id": "a1b6c2ac",
+            "name": "轉(交)換債發行資料下載",
+            "url": "https://www.tpex.org.tw/openapi/v1/bond_ISSBD5_data"
+        },
+        {
+            "id": "a10028b2",
+            "name": "海外轉換債發行資料下載",
+            "url": "https://www.tpex.org.tw/openapi/v1/bond_ISSBD6_data"
+        },
+        {
+            "id": "d6d2d2fd",
+            "name": "附認股權公司債發行資料下載",
+            "url": "https://www.tpex.org.tw/openapi/v1/bond_ISSBD7_data"
+        },
+        {
+            "id": "71f88c2b",
+            "name": "海外附認股權公司債發行資料下載",
+            "url": "https://www.tpex.org.tw/openapi/v1/bond_ISSBD8_data"
+        },
+        {
+            "id": "f6d0fe7e",
+            "name": "海外普通債發行資料下載",
+            "url": "https://www.tpex.org.tw/openapi/v1/bond_ISSBD9_data"
+        },
+        {
+            "id": "fc374568",
+            "name": "國際債券(寶島債券)-本國發行人及第一、二上市(櫃)公司之外國發行人發行資料下載",
+            "url": "https://www.tpex.org.tw/openapi/v1/bond_ISSBD10_data"
+        },
+        {
+            "id": "08e8fc52",
+            "name": "國際債券(寶島債券)-外國發行人(在我國未公開發行股權商品者)發行資料下載",
+            "url": "https://www.tpex.org.tw/openapi/v1/bond_ISSBD11_data"
+        },
+        {
+            "id": "25c3cb31",
+            "name": "興櫃處置有價證券資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_esb_disposal_information"
+        },
+        {
+            "id": "77d4353b",
+            "name": "興櫃公布注意有價證券資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_esb_warning_information"
+        },
+        {
+            "id": "f55e9b2d",
+            "name": "興櫃推薦證券商與推薦之股票",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_esb_recommended_dealer"
+        },
+        {
+            "id": "e4623e10",
+            "name": "興櫃股票當日行情表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_esb_latest_statistics"
+        },
+        {
+            "id": "36194a76",
+            "name": "興櫃股票市場現況",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_esb_highlight"
+        },
+        {
+            "id": "520ba0f5",
+            "name": "黃金現貨權證發行基本資料",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_warrant_gold"
+        },
+        {
+            "id": "d28bcd44",
+            "name": "黃金現貨權證收盤行情",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_warrant_gold_quts"
+        },
+        {
+            "id": "ce8b5d02",
+            "name": "上櫃權證收盤行情日報表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_warrant_daily_quts"
+        },
+        {
+            "id": "85736b4b",
+            "name": "上櫃權證收盤行情月報表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_warrant_monthly_quts"
+        },
+        {
+            "id": "dd6abf2e",
+            "name": "上櫃權證發行基本資料",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_warrant_issue"
+        },
+        {
+            "id": "f3956311",
+            "name": "上櫃牛熊證收盤行情(不含展延型牛熊證)日報表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_warrant_wcb_daily_quts"
+        },
+        {
+            "id": "d8e16be6",
+            "name": "上櫃牛熊證收盤行情(不含展延型牛熊證)月報表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_warrant_wcb_monthly_quts"
+        },
+        {
+            "id": "fab87006",
+            "name": "上櫃牛熊證發行基本資料(不含展延型牛熊證)",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_warrant_wcb_issue"
+        },
+        {
+            "id": "9534756b",
+            "name": "上櫃展延型牛熊證收盤行情日報表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_warrant_wxy_daily_quts"
+        },
+        {
+            "id": "9ba568a3",
+            "name": "上櫃展延型牛熊證收盤行情月報表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_warrant_wxy_monthly_quts"
+        },
+        {
+            "id": "deff4a30",
+            "name": "上櫃展延型牛熊證發行基本資料",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_warrant_wxy_issue"
+        },
+        {
+            "id": "fda78429",
+            "name": "單筆權證成交資料",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_warrant_quts"
+        },
+        {
+            "id": "41ade909",
+            "name": "每日權證交易人數(上櫃)",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_warrant_statistics"
+        },
+        {
+            "id": "db1a2214",
+            "name": "上櫃股票權證資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_warrant"
+        },
+        {
+            "id": "cad8a628",
+            "name": "上櫃權證當日暫停/恢復交易資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_warrant_suspend_today"
+        },
+        {
+            "id": "a1f7000e",
+            "name": "上櫃權證歷史暫停/恢復交易資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_warrant_suspend_history"
+        },
+        {
+            "id": "2e7b6c7e",
+            "name": "上櫃權證基本資料彙總表",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap37_O"
+        },
+        {
+            "id": "df04fabc",
+            "name": "上櫃認購(售)權證每日成交資料檔",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap42_O"
+        },
+        {
+            "id": "8d0014f4",
+            "name": "上櫃認購(售)權證年度發行量概況統計表",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap36_O"
+        },
+        {
+            "id": "31a99be4",
+            "name": "開放式基金當日行情表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_opfund_latest"
+        },
+        {
+            "id": "02d8356c",
+            "name": "開放式基金受益憑證造市商與造市之基金",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_opfund_recommended_dealer"
+        },
+        {
+            "id": "e24bf564",
+            "name": "開放式基金市場現況",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_opfund_market_highlight"
+        },
+        {
+            "id": "bf2ee977",
+            "name": "黃金現貨市場現況",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_gold_market_highlight"
+        },
+        {
+            "id": "a0cbdb50",
+            "name": "造市商與造市之黃金現貨",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_gold_recommended_dealer"
+        },
+        {
+            "id": "47a0dc96",
+            "name": "黃金現貨當日行情表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_gold_latest"
+        },
+        {
+            "id": "c4b54827",
+            "name": "創櫃板公司市場現況",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_gisa_highlight"
+        },
+        {
+            "id": "9b1d4bb1",
+            "name": "創櫃板公司資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_gisa_company"
+        },
+        {
+            "id": "acf1765f",
+            "name": "於登錄創櫃板前辦理籌資資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_gisa_financing_before"
+        },
+        {
+            "id": "8d2b4e87",
+            "name": "創櫃板公司透過籌資系統辦理籌資資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_gisa_financing_history"
+        },
+        {
+            "id": "fb83bb5b",
+            "name": "創櫃板辦理中籌資資訊",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_gisa_financing_in_process"
+        },
+        {
+            "id": "02a58f6f",
+            "name": "券商業務別人員數",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap01"
+        },
+        {
+            "id": "5de2893e",
+            "name": "上櫃股票各券商總公司當日營業金額統計表",
+            "url": "https://www.tpex.org.tw/openapi/v1/tpex_daily_broker2"
+        },
+        {
+            "id": "af6dad30",
+            "name": "上櫃公司資產負債表(金融業)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap07_O_basi"
+        },
+        {
+            "id": "17dbc41d",
+            "name": "上櫃公司資產負債表(證券期貨業)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap07_O_bd"
+        },
+        {
+            "id": "cf6951fd",
+            "name": "上櫃公司資產負債表(一般業)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap07_O_ci"
+        },
+        {
+            "id": "450c47c0",
+            "name": "上櫃公司資產負債表(金控業)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap07_O_fh"
+        },
+        {
+            "id": "c16c3410",
+            "name": "上櫃公司資產負債表(保險業)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap07_O_ins"
+        },
+        {
+            "id": "02679cb5",
+            "name": "上櫃公司資產負債表(異業)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap07_O_mim"
+        },
+        {
+            "id": "2a0dde3d",
+            "name": "上櫃公司綜合損益表(金融業)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_basi"
+        },
+        {
+            "id": "7bcd35f8",
+            "name": "上櫃公司綜合損益表(證券期貨業)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_bd"
+        },
+        {
+            "id": "cbd7f76c",
+            "name": "上櫃公司綜合損益表(一般業)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_ci"
+        },
+        {
+            "id": "575aaefd",
+            "name": "上櫃公司綜合損益表(金控業)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_fh"
+        },
+        {
+            "id": "d60f35e0",
+            "name": "上櫃公司綜合損益表(保險業)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_ins"
+        },
+        {
+            "id": "7dbc00f8",
+            "name": "上櫃公司綜合損益表(異業)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_mim"
+        },
+        {
+            "id": "353057b4",
+            "name": "上櫃公司財報資訊(金融業)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_basiA"
+        },
+        {
+            "id": "17230bc9",
+            "name": "上櫃公司財報資訊(證券期貨業)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_bdA"
+        },
+        {
+            "id": "5d35cfee",
+            "name": "上櫃公司財報資訊( 一般業)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_ciA"
+        },
+        {
+            "id": "53ecd47a",
+            "name": "上櫃公司財報資訊(金控業)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_fhA"
+        },
+        {
+            "id": "0b0a09c0",
+            "name": "上櫃公司財報資訊(保險業)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_insA"
+        },
+        {
+            "id": "5eb3921d",
+            "name": "上櫃公司財報資訊(異業)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_mimA"
+        },
+        {
+            "id": "05763144",
+            "name": "興櫃公司資產負債表-證券期貨業",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap07_U_bd"
+        },
+        {
+            "id": "eef9f564",
+            "name": "興櫃公司資產負債表-一般業",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap07_U_ci"
+        },
+        {
+            "id": "c1217f82",
+            "name": "興櫃公司資產負債表-金控業",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap07_U_fh"
+        },
+        {
+            "id": "0cf3d0a1",
+            "name": "興櫃公司資產負債表-保險業",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap07_U_ins"
+        },
+        {
+            "id": "905a85ec",
+            "name": "興櫃公司資產負債表-異業",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap07_U_mim"
+        },
+        {
+            "id": "4a15228c",
+            "name": "興櫃公司綜合損益表-金融業",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_U_basi"
+        },
+        {
+            "id": "3b56b61d",
+            "name": "興櫃公司綜合損益表-證券期貨業",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_U_bd"
+        },
+        {
+            "id": "f262b5b2",
+            "name": "興櫃公司綜合損益表-一般業",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_U_ci"
+        },
+        {
+            "id": "f8c48d5f",
+            "name": "興櫃公司綜合損益表-金控業",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_U_fh"
+        },
+        {
+            "id": "07df47a2",
+            "name": "興櫃公司綜合損益表-保險業",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_U_ins"
+        },
+        {
+            "id": "849e101f",
+            "name": "興櫃公司綜合損益表-異業",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_U_mim"
+        },
+        {
+            "id": "637d0a79",
+            "name": "興櫃公司資產負債表-金融業",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap07_U_basi"
+        },
+        {
+            "id": "020ae6e9",
+            "name": "上櫃公司截至各季綜合損益財測達成情形(簡式)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap15_O"
+        },
+        {
+            "id": "b7a8f361",
+            "name": "上櫃公司當季綜合損益經會計師查核(核閱)數與當季預測數差異達百分之十以上者，或截至當季累計差異達百分之二十以上者(簡式)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap16_O"
+        },
+        {
+            "id": "67279ab2",
+            "name": "上櫃公司營益分析查詢彙總表(全體公司彙總報表)",
+            "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_187ap17_O"
+        }
+    ]
+}
