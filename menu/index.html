@@ -456,10 +456,13 @@
         }
 
         function setupEventListeners() {
-            document.getElementById('q').addEventListener('input', e => {
-                query = e.target.value.toLowerCase().trim();
-                renderMenu(menuData);
-            });
+            const searchEl = document.getElementById('q');
+            if (searchEl) {
+                searchEl.addEventListener('input', e => {
+                    query = e.target.value.toLowerCase().trim();
+                    renderMenu(menuData);
+                });
+            }
             document.getElementById('hideSoldout').addEventListener('change', e => {
                 hideSoldOut = e.target.checked;
                 renderMenu(menuData);
@@ -650,7 +653,7 @@
         function passFilters(it) {
             if (hideSoldOut && String(it.soldout).toLowerCase() === 'true') return false;
             if (!query) return true;
-            const fields = [it.zh, it.en, it.ja, it.ko, it.fr, it.th, it.fil, it.vi, it.contains]
+            const fields = [it.zh, it.en, it.ja, it.ko, it.fr, it.th, it['zh-CN'], it.vi, it.contains]
                 .filter(Boolean).join(' ').toLowerCase();
             return fields.includes(query);
         }
